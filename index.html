@@ -23,7 +23,6 @@
             min-height: 100vh;
         }
 
-        /* Menu Lateral */
         .sidebar {
             width: 260px;
             background: #1a1a1a;
@@ -86,13 +85,11 @@
             font-weight: 500;
         }
 
-        /* Conteúdo Principal */
         .main-content {
             flex: 1;
             padding: 32px;
         }
 
-        /* Header */
         .header {
             background: #1a1a1a;
             border-radius: 20px;
@@ -139,7 +136,6 @@
             background: #fb923c;
         }
 
-        /* Cards de Estatísticas (agora clicáveis) */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -199,7 +195,6 @@
             margin-top: 2px;
         }
 
-        /* Seções */
         .section {
             background: #1a1a1a;
             border-radius: 20px;
@@ -242,7 +237,6 @@
             transform: scale(1.02);
         }
 
-        /* Listas */
         .list-item {
             display: flex;
             justify-content: space-between;
@@ -425,7 +419,6 @@
             color: #e0e0e0;
         }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -528,7 +521,6 @@
             flex: 1;
         }
 
-        /* Login */
         .login-container {
             max-width: 380px;
             margin: 120px auto;
@@ -590,6 +582,46 @@
         .hidden {
             display: none !important;
         }
+
+        .timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px;
+            background: #2a2a2a;
+            border-radius: 12px;
+        }
+
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-content h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #f97316;
+        }
+
+        .timeline-content p {
+            font-size: 12px;
+            color: #ccc;
+        }
     </style>
 </head>
 <body>
@@ -648,7 +680,7 @@
                 </div>
             </div>
 
-            <!-- Seção Painel (sem listas duplicadas) -->
+            <!-- Seção Painel -->
             <div id="dashboardSection">
                 <div class="stats-grid">
                     <div class="stat-card" onclick="showSection('products')">
@@ -661,7 +693,7 @@
                             <div class="label">itens ativos</div>
                         </div>
                     </div>
-                    <div class="stat-card" onclick="filterByLowStock()">
+                    <div class="stat-card" onclick="showSection('products')">
                         <div class="stat-icon">
                             <span>⚠️</span>
                         </div>
@@ -671,7 +703,7 @@
                             <div class="label">produtos</div>
                         </div>
                     </div>
-                    <div class="stat-card" onclick="filterByActiveLoans()">
+                    <div class="stat-card" onclick="showSection('loans')">
                         <div class="stat-icon">
                             <span>🔧</span>
                         </div>
@@ -680,6 +712,17 @@
                             <div class="number" id="loanedCount">0</div>
                             <div class="label">itens</div>
                         </div>
+                    </div>
+                </div>
+
+                <!-- Últimas Movimentações -->
+                <div class="section">
+                    <div class="section-header">
+                        <h2>📋 Últimas Movimentações</h2>
+                    </div>
+                    <div id="recentMovementsList" class="empty-state">
+                        <span>📊</span>
+                        <p>Nenhuma movimentação recente</p>
                     </div>
                 </div>
             </div>
@@ -912,18 +955,6 @@
             }
         }
 
-        // FILTROS ESPECIAIS (para os cards)
-        function filterByLowStock() {
-            showSection('products');
-            // Aqui você pode definir um filtro especial, mas por enquanto só vai para produtos
-            // Idealmente, você aplicaria um filtro de "estoque baixo" automaticamente
-        }
-
-        function filterByActiveLoans() {
-            showSection('loans');
-            // Vai para a seção de empréstimos
-        }
-
         // DASHBOARD
         function updateDashboard() {
             document.getElementById('totalProducts').textContent = products.length;
@@ -933,9 +964,37 @@
             
             const activeLoans = loans.filter(l => !l.returned);
             document.getElementById('loanedCount').textContent = activeLoans.length;
+
+            // Últimas movimentações
+            const recentMovements = movements.slice(-5).reverse();
+            const recentList = document.getElementById('recentMovementsList');
+            if (recentMovements.length > 0) {
+                recentList.innerHTML = recentMovements.map(m => {
+                    let icon = m.type === 'entry' ? '📥' : m.type === 'exit' ? '📤' : m.type === 'loan' ? '🔧' : m.type === 'return' ? '↩️' : '🗑️';
+                    let color = m.type === 'entry' ? '#4caf50' : m.type === 'exit' ? '#f44336' : m.type === 'loan' ? '#42a5f5' : m.type === 'return' ? '#4caf50' : '#f97316';
+                    return `
+                        <div class="timeline-item">
+                            <div class="timeline-icon" style="background: ${color}20; color: ${color}">
+                                ${icon}
+                            </div>
+                            <div class="timeline-content">
+                                <h4>${m.productName}</h4>
+                                <p>${m.type === 'entry' ? 'Entrada' : m.type === 'exit' ? 'Saída' : m.type === 'loan' ? 'Empréstimo' : m.type === 'return' ? 'Devolução' : 'Retirada'} • ${m.quantity} unid.</p>
+                                <small>${formatDateTime(m.datetime)}</small>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                recentList.innerHTML = `
+                    <div class="empty-state">
+                        <span>📊</span>
+                        <p>Nenhuma movimentação recente</p>
+                    </div>
+                `;
+            }
         }
 
-        // Utilitário para formatar data/hora
         function formatDateTime(datetimeStr) {
             if (!datetimeStr) return '';
             const [date, time] = datetimeStr.split(' ');
@@ -1285,12 +1344,10 @@
                 return;
             }
 
-            // Reduzir do estoque
             product.quantity -= qty;
             
             const datetime = `${date} ${time}`;
 
-            // Registrar movimentação de baixa
             movements.push({
                 id: Date.now(),
                 productId: product.id,
@@ -1301,7 +1358,6 @@
                 observation: `Retirada permanente - ${userName} - ${observation}`
             });
 
-            // Registrar na lista de retiradas
             let permanentItems = JSON.parse(localStorage.getItem('permanent')) || [];
             permanentItems.push({
                 id: Date.now(),
@@ -1324,7 +1380,6 @@
             loadHistory();
         }
 
-        // CARREGAR ITENS DE RETIRADA PERMANENTE
         function loadPermanentItems() {
             const permanentItems = JSON.parse(localStorage.getItem('permanent')) || [];
             const list = document.getElementById('permanentList');
