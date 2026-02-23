@@ -3,2480 +3,1388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recepção HWT - Sistema Hoteleiro</title>
-    <meta name="description" content="Sistema gratuito de gestão hoteleira para pequenos hotéis e pousadas">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Controle de Estoque</title>
     <style>
-        :root {
-            --laranja: #FF8C00;
-            --laranja-claro: #FFA500;
-            --laranja-escuro: #E67E00;
-            --cinza: #333333;
-            --cinza-claro: #f4f4f4;
-            --cinza-medio: #e0e0e0;
-            --branco: #ffffff;
-            --verde: #4CAF50;
-            --vermelho: #F44336;
-            --azul: #2196F3;
-            --amarelo: #FFC107;
-            --preto: #000000;
-        }
-        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-        
+
         body {
-            background-color: var(--cinza-claro);
-            color: var(--cinza);
+            background: #0a0a0a;
+            min-height: 100vh;
+            color: #e0e0e0;
+        }
+
+        .app-container {
+            display: flex;
             min-height: 100vh;
         }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+
+        /* Menu Lateral */
+        .sidebar {
+            width: 260px;
+            background: #1a1a1a;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.5);
+            padding: 32px 0;
+            border-right: 1px solid #333;
+            height: auto;
+            align-self: flex-start;
         }
-        
-        /* Tela de Login */
-        #login-screen {
+
+        .logo {
+            padding: 0 24px 32px 24px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 24px;
+        }
+
+        .logo h2 {
+            color: #f97316;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .logo p {
+            color: #aaa;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .menu-item {
             display: flex;
-            justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, var(--laranja) 0%, var(--cinza) 100%);
+            padding: 12px 24px;
+            color: #ccc;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            margin: 4px 0;
         }
-        
-        .login-container {
-            background-color: var(--branco);
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 400px;
-            padding: 40px 30px;
-            text-align: center;
+
+        .menu-item:hover {
+            background: #2a2a2a;
+            color: #f97316;
         }
-        
-        .login-logo {
-            font-size: 2.8rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
+
+        .menu-item.active {
+            background: #2a2a2a;
+            color: #f97316;
+            border-left-color: #f97316;
         }
-        
-        .logo-hwt {
-            color: var(--laranja);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+
+        .menu-item span {
+            font-size: 20px;
+            margin-right: 14px;
         }
-        
-        .login-subtitle {
-            color: var(--cinza);
-            margin-bottom: 30px;
-            font-size: 1rem;
-            opacity: 0.8;
+
+        .menu-item .menu-text {
+            font-size: 14px;
+            font-weight: 500;
         }
-        
-        .login-tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--cinza-medio);
-        }
-        
-        .login-tab {
+
+        /* Conteúdo Principal */
+        .main-content {
             flex: 1;
-            padding: 12px;
-            background: none;
-            border: none;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            color: var(--cinza);
-            transition: all 0.3s;
+            padding: 32px;
         }
-        
-        .login-tab.active {
-            color: var(--laranja);
-            border-bottom: 3px solid var(--laranja);
-        }
-        
-        .login-form {
-            display: none;
-        }
-        
-        .login-form.active {
-            display: block;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--cinza);
-        }
-        
-        input, select, button, textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--cinza-medio);
-            border-radius: 6px;
-            font-size: 1rem;
-        }
-        
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: var(--laranja);
-            box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.2);
-        }
-        
-        button {
-            background-color: var(--laranja);
-            color: var(--branco);
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            margin-top: 10px;
-        }
-        
-        button:hover {
-            background-color: var(--laranja-escuro);
-        }
-        
-        .secondary-btn {
-            background-color: transparent;
-            color: var(--cinza);
-            border: 1px solid var(--cinza-medio);
-        }
-        
-        .secondary-btn:hover {
-            background-color: var(--cinza-claro);
-        }
-        
-        /* Sistema Principal */
-        #main-system {
-            display: none;
-        }
-        
-        header {
-            background-color: var(--branco);
-            color: var(--cinza);
-            padding: 15px 20px;
-            text-align: center;
-            border-radius: 8px 8px 0 0;
-            position: relative;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+
+        /* Header */
+        .header {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 24px 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border: 1px solid #333;
         }
-        
+
+        .header h1 {
+            color: #f97316;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
         .user-info {
             display: flex;
             align-items: center;
-            font-size: 0.9rem;
+            gap: 24px;
         }
-        
+
         .user-name {
-            margin-right: 15px;
-            color: var(--cinza);
+            color: #ccc;
+            font-weight: 500;
+            font-size: 14px;
         }
-        
+
         .logout-btn {
-            width: auto;
-            padding: 6px 12px;
-            font-size: 0.8rem;
-            background-color: var(--cinza);
-        }
-        
-        .logout-btn:hover {
-            background-color: #555;
-        }
-        
-        .logo {
-            font-size: 2.2rem;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-        
-        .logo-hwt {
-            color: var(--laranja);
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-        
-        nav {
-            background-color: var(--cinza);
-            padding: 10px 0;
-            border-radius: 0 0 8px 8px;
-        }
-        
-        nav ul {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-        }
-        
-        nav li {
-            margin: 0 15px;
-        }
-        
-        nav a {
-            color: var(--branco);
-            text-decoration: none;
-            font-weight: bold;
-            padding: 5px 10px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        
-        nav a:hover {
-            background-color: var(--laranja);
-        }
-        
-        .tab-content {
-            display: none;
-            margin-top: 20px;
-            background-color: var(--branco);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .active {
-            display: block;
-        }
-        
-        .quartos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .quarto {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
+            background: #f97316;
+            color: #0a0a0a;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
             cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.2s;
         }
-        
-        .quarto.disponivel {
-            background-color: #e8f5e9;
-            border-color: var(--verde);
+
+        .logout-btn:hover {
+            background: #fb923c;
         }
-        
-        .quarto.ocupado {
-            background-color: #ffebee;
-            border-color: var(--vermelho);
+
+        /* Cards de Estatísticas (agora clicáveis) */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
         }
-        
-        .quarto.manutencao {
-            background-color: #000000;
-            border-color: var(--preto);
-            color: var(--branco);
+
+        .stat-card {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #333;
+            cursor: pointer;
         }
-        
-        .quarto:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.5);
+            border-color: #f97316;
         }
-        
-        .quarto-numero {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 10px;
+
+        .stat-icon {
+            width: 56px;
+            height: 56px;
+            background: #2a2a2a;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
         }
-        
-        .quarto.manutencao .quarto-numero {
-            color: var(--branco);
+
+        .stat-icon span {
+            font-size: 28px;
         }
-        
-        .quarto-status {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+
+        .stat-info h3 {
+            color: #aaa;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 4px;
         }
-        
-        .quarto.disponivel .quarto-status {
-            color: var(--verde);
+
+        .stat-info .number {
+            color: #f97316;
+            font-size: 28px;
+            font-weight: 700;
         }
-        
-        .quarto.ocupado .quarto-status {
-            color: var(--vermelho);
+
+        .stat-info .label {
+            color: #888;
+            font-size: 12px;
+            margin-top: 2px;
         }
-        
-        .quarto.manutencao .quarto-status {
-            color: var(--amarelo);
+
+        /* Seções */
+        .section {
+            background: #1a1a1a;
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border: 1px solid #333;
         }
-        
-        .quarto-pessoas {
-            font-size: 0.9rem;
-            color: var(--cinza);
-            margin-bottom: 10px;
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
         }
-        
-        .quarto.manutencao .quarto-pessoas {
-            color: var(--branco);
+
+        .section-header h2 {
+            color: #f97316;
+            font-size: 18px;
+            font-weight: 700;
         }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+
+        .section-header button {
+            background: #f97316;
+            color: #0a0a0a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
         }
-        
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
+
+        .section-header button:hover {
+            background: #fb923c;
+            transform: scale(1.02);
         }
-        
-        th {
-            background-color: var(--laranja);
-            color: var(--branco);
+
+        /* Listas */
+        .list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #333;
+            transition: background 0.2s;
         }
-        
-        tr:hover {
-            background-color: #f5f5f5;
+
+        .list-item:last-child {
+            border-bottom: none;
         }
-        
-        .alert {
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 15px;
+
+        .list-item:hover {
+            background: #2a2a2a;
+            border-radius: 12px;
         }
-        
-        .alert-success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+
+        .item-info h4 {
+            color: #f97316;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
         }
-        
-        .alert-error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+
+        .item-info p {
+            color: #ccc;
+            font-size: 13px;
         }
-        
+
+        .item-info small {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .item-status {
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-low {
+            background: #442a2a;
+            color: #f97316;
+        }
+
+        .status-ok {
+            background: #1a3a1a;
+            color: #4caf50;
+        }
+
+        .status-loan {
+            background: #1a3a4a;
+            color: #42a5f5;
+        }
+
+        .status-archived {
+            background: #333;
+            color: #aaa;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .item-actions button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .item-actions button:hover {
+            transform: translateY(-2px);
+            filter: brightness(0.9);
+        }
+
+        .btn-edit {
+            background: #2a2a2a;
+            color: #f97316;
+        }
+
+        .btn-loan {
+            background: #42a5f5;
+            color: #0a0a0a;
+        }
+
+        .btn-delete {
+            background: #f44336;
+            color: #0a0a0a;
+        }
+
+        .btn-return {
+            background: #4caf50;
+            color: #0a0a0a;
+        }
+
+        .btn-permanent {
+            background: #f97316;
+            color: #0a0a0a;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            color: #888;
+        }
+
+        .empty-state span {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 16px;
+            opacity: 0.6;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            padding: 12px 16px;
+            border: 2px solid #333;
+            border-radius: 40px;
+            font-size: 14px;
+            background: #2a2a2a;
+            color: #e0e0e0;
+            transition: border-color 0.2s;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #f97316;
+        }
+
+        .category-filter {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 4px 0;
+        }
+
+        .category-filter button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 40px;
+            background: #2a2a2a;
+            color: #ccc;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .category-filter button.active {
+            background: #f97316;
+            color: #0a0a0a;
+        }
+
+        .date-filter {
+            padding: 10px 16px;
+            border: 2px solid #333;
+            border-radius: 40px;
+            font-size: 13px;
+            background: #2a2a2a;
+            color: #e0e0e0;
+        }
+
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            backdrop-filter: blur(4px);
         }
-        
+
+        .modal.active {
+            display: flex;
+        }
+
         .modal-content {
-            background-color: var(--branco);
-            padding: 20px;
-            border-radius: 8px;
+            background: #1a1a1a;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 500px;
             width: 90%;
-            max-width: 600px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             max-height: 90vh;
             overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid #333;
         }
-        
+
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .close {
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--cinza);
-        }
-        
-        .checkout-btn {
-            background-color: var(--vermelho);
-            width: auto;
-            padding: 5px 10px;
-            font-size: 0.9rem;
-        }
-        
-        .checkout-btn:hover {
-            background-color: #d32f2f;
-        }
-        
-        .manutencao-btn {
-            background-color: var(--amarelo);
-            color: var(--cinza);
-            width: auto;
-            padding: 5px 10px;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-        
-        .manutencao-btn:hover {
-            background-color: #e0a800;
-        }
-        
-        .andar-selector {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .andar-btn {
-            width: auto;
-            margin: 0 5px;
-            padding: 8px 15px;
-        }
-        
-        .andar-btn.active {
-            background-color: var(--cinza);
-        }
-        
-        .quantidade-info {
-            display: inline-block;
-            background-color: var(--laranja);
-            color: var(--branco);
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            text-align: center;
-            line-height: 25px;
-            margin-left: 5px;
-            font-size: 0.8rem;
-        }
-        
-        .edit-btn {
-            background-color: var(--azul);
-            width: auto;
-            padding: 5px 10px;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-        
-        .edit-btn:hover {
-            background-color: #0b7dda;
-        }
-        
-        .page-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: var(--cinza);
-            border-bottom: 2px solid var(--laranja);
-            padding-bottom: 8px;
-        }
-        
-        .form-row {
-            display: flex;
-            gap: 15px;
-        }
-        
-        .form-row .form-group {
-            flex: 1;
-        }
-        
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-        
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-        
-        .status-dot.disponivel {
-            background-color: var(--verde);
-        }
-        
-        .status-dot.ocupado {
-            background-color: var(--vermelho);
-        }
-        
-        .status-dot.manutencao {
-            background-color: var(--amarelo);
-        }
-        
-        .hospede-secao {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: var(--cinza-claro);
-            border-radius: 6px;
-        }
-        
-        .hospede-titulo {
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: var(--cinza);
-            border-bottom: 1px solid var(--cinza-medio);
-            padding-bottom: 5px;
-        }
-        
-        .time-inputs {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .time-inputs .form-group {
-            flex: 1;
-        }
-        
-        .data-hora-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 10px 15px;
-            background-color: var(--laranja);
-            color: var(--branco);
-            border-radius: 6px;
-            font-weight: bold;
-        }
-        
-        .data-atual, .hora-atual {
-            font-size: 1.1rem;
+            margin-bottom: 24px;
         }
 
-        .status-historico {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-left: 8px;
+        .modal-header h2 {
+            color: #f97316;
+            font-size: 20px;
+            font-weight: 700;
         }
-        
-        .status-ativo {
-            background-color: var(--verde);
-            color: white;
-        }
-        
-        .status-finalizado {
-            background-color: var(--cinza);
-            color: white;
-        }
-        
-        .status-automatico {
-            background-color: var(--laranja);
-            color: white;
-        }
-        
-        .status-manutencao {
-            background-color: var(--amarelo);
-            color: var(--cinza);
-        }
-        
-        /* Estilos para o histórico com abas */
-        .historico-accordion {
-            margin-top: 20px;
-        }
-        
-        .historico-item {
-            border: 1px solid var(--cinza-medio);
-            border-radius: 6px;
-            margin-bottom: 10px;
-            overflow: hidden;
-        }
-        
-        .historico-header {
-            background-color: var(--cinza-claro);
-            padding: 15px;
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
             cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background-color 0.3s;
+            color: #888;
         }
-        
-        .historico-header:hover {
-            background-color: var(--cinza-medio);
-        }
-        
-        .historico-header.active {
-            background-color: var(--laranja);
-            color: white;
-        }
-        
-        .historico-info {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        
-        .historico-info-item {
+
+        .modal-form {
             display: flex;
             flex-direction: column;
+            gap: 16px;
         }
-        
-        .historico-info-label {
-            font-size: 0.8rem;
-            color: var(--cinza);
+
+        .modal-form input,
+        .modal-form select,
+        .modal-form textarea {
+            padding: 14px;
+            border: 2px solid #333;
+            border-radius: 12px;
+            font-size: 14px;
+            background: #2a2a2a;
+            color: #e0e0e0;
+            transition: border-color 0.2s;
         }
-        
-        .historico-info-value {
-            font-weight: bold;
+
+        .modal-form input:focus,
+        .modal-form select:focus,
+        .modal-form textarea:focus {
+            outline: none;
+            border-color: #f97316;
         }
-        
-        .historico-detalhes {
-            padding: 0;
-            max-height: 0;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            background-color: var(--branco);
+
+        .modal-form button {
+            background: #f97316;
+            color: #0a0a0a;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background 0.2s;
         }
-        
-        .historico-detalhes.active {
-            padding: 20px;
-            max-height: 500px;
+
+        .modal-form button:hover {
+            background: #fb923c;
         }
-        
-        .detalhes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-        }
-        
-        .detalhes-item {
-            margin-bottom: 10px;
-        }
-        
-        .detalhes-label {
-            font-weight: bold;
-            color: var(--cinza);
-            margin-bottom: 5px;
-        }
-        
-        .detalhes-value {
-            padding: 8px;
-            background-color: var(--cinza-claro);
-            border-radius: 4px;
-        }
-        
-        .historico-actions {
+
+        .datetime-row {
             display: flex;
             gap: 10px;
-            margin-top: 15px;
         }
-        
-        .btn-detalhes {
-            background-color: transparent;
-            border: 1px solid var(--laranja);
-            color: var(--laranja);
-            width: auto;
-            padding: 5px 10px;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-        
-        .btn-detalhes:hover {
-            background-color: var(--laranja);
-            color: white;
-        }
-        
-        .btn-detalhes i {
-            margin-right: 5px;
-        }
-        
-        .btn-detalhes.aberto {
-            background-color: var(--laranja);
-            color: white;
-        }
-        
-        .toggle-icon {
-            transition: transform 0.3s;
-        }
-        
-        .toggle-icon.aberto {
-            transform: rotate(180deg);
-        }
-        
-        .historico-filtros {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .filtro-item {
+
+        .datetime-row input {
             flex: 1;
-            min-width: 150px;
         }
-        
-        .historico-vazio {
-            text-align: center;
+
+        /* Login */
+        .login-container {
+            max-width: 380px;
+            margin: 120px auto;
+            background: #1a1a1a;
+            border-radius: 32px;
             padding: 40px;
-            color: var(--cinza-medio);
-            font-style: italic;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid #333;
         }
-        
-        .hospede-info {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: var(--cinza-claro);
-            border-radius: 4px;
-        }
-        
-        .hospede-info-label {
-            font-weight: bold;
-            color: var(--cinza);
-        }
-        
-        .info-box {
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #e3f2fd;
-            border-radius: 4px;
-            font-size: 0.9rem;
+
+        .login-header {
             text-align: center;
+            margin-bottom: 32px;
         }
 
-        .observacao-box {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 6px;
-            border-left: 4px solid var(--laranja);
-        }
-        
-        .observacao-label {
-            font-weight: bold;
+        .login-header h1 {
+            color: #f97316;
+            font-size: 28px;
+            font-weight: 700;
             margin-bottom: 8px;
-            color: var(--cinza);
-        }
-        
-        .observacao-text {
-            font-style: italic;
-            color: #666;
-            white-space: pre-wrap;
-            line-height: 1.4;
-        }
-        
-        textarea {
-            resize: vertical;
-            min-height: 80px;
         }
 
-        .backup-section {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: var(--cinza-claro);
-            border-radius: 8px;
-            border-left: 4px solid var(--laranja);
+        .login-header p {
+            color: #aaa;
+            font-size: 14px;
         }
-        
-        .backup-title {
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            color: var(--cinza);
-        }
-        
-        .backup-buttons {
+
+        .login-form {
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 20px;
         }
-        
-        .backup-btn {
-            background-color: var(--azul);
-            width: auto;
-            padding: 10px 20px;
+
+        .login-form input {
+            padding: 16px;
+            border: 2px solid #333;
+            border-radius: 16px;
+            font-size: 15px;
+            background: #2a2a2a;
+            color: #e0e0e0;
         }
-        
-        .backup-btn.export {
-            background-color: var(--verde);
-        }
-        
-        .backup-btn.import {
-            background-color: var(--laranja);
-        }
-        
-        .file-input {
-            display: none;
-        }
-        
-        .file-label {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: var(--laranja);
-            color: white;
-            border-radius: 6px;
+
+        .login-form button {
+            background: #f97316;
+            color: #0a0a0a;
+            border: none;
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        
-        .file-label:hover {
-            background-color: var(--laranja-escuro);
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .logo {
-                font-size: 1.8rem;
-            }
-            
-            nav ul {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .quartos-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            }
-            
-            .data-hora-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .historico-filtros {
-                flex-direction: column;
-            }
-            
-            .backup-buttons {
-                flex-direction: column;
-            }
+            transition: background 0.2s;
         }
 
-        /* Botão de manutenção direta */
-        .manutencao-direct-btn {
-            background-color: var(--amarelo);
-            color: var(--cinza);
-            width: auto;
-            padding: 5px 10px;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-        
-        .manutencao-direct-btn:hover {
-            background-color: #e0a800;
+        .login-form button:hover {
+            background: #fb923c;
         }
 
-        /* Botão para finalizar manutenção */
-        .finalizar-manutencao-btn {
-            background-color: var(--verde);
-            color: var(--branco);
-            width: auto;
-            padding: 5px 10px;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-        
-        .finalizar-manutencao-btn:hover {
-            background-color: #45a049;
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
 <body>
     <!-- Tela de Login -->
-    <div id="login-screen">
-        <div class="login-container">
-            <div class="login-logo">
-                <span class="logo-hwt">Recepção HWT</span>
-            </div>
-            <div class="login-subtitle">Sistema de Gestão Hoteleira</div>
-            
-            <div class="login-tabs">
-                <button class="login-tab active" data-tab="login">Entrar</button>
-                <button class="login-tab" data-tab="register">Criar Usuário</button>
-            </div>
-            
-            <form id="login-form" class="login-form active">
-                <div class="form-group">
-                    <label for="login-username">Usuário</label>
-                    <input type="text" id="login-username" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="login-password">Senha</label>
-                    <input type="password" id="login-password" required>
-                </div>
-                
-                <button type="submit">Entrar</button>
-            </form>
-            
-            <form id="register-form" class="login-form">
-                <div class="form-group">
-                    <label for="register-name">Nome Completo</label>
-                    <input type="text" id="register-name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="register-username">Usuário</label>
-                    <input type="text" id="register-username" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="register-password">Senha</label>
-                    <input type="password" id="register-password" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="register-confirm-password">Confirmar Senha</label>
-                    <input type="password" id="register-confirm-password" required>
-                </div>
-                
-                <button type="submit">Criar Usuário</button>
-                <div class="info-box">
-                    <i class="fas fa-info-circle"></i> Limite máximo: 4 usuários no sistema
-                </div>
-            </form>
+    <div id="loginScreen" class="login-container">
+        <div class="login-header">
+            <h1>Controle de Estoque</h1>
+            <p>Faça login para acessar o sistema</p>
+        </div>
+        <div class="login-form">
+            <input type="text" id="username" placeholder="Usuário" value="admin">
+            <input type="password" id="password" placeholder="Senha" value="123456">
+            <button onclick="login()">Entrar</button>
         </div>
     </div>
-    
-    <!-- Sistema Principal -->
-    <div id="main-system" class="container">
-        <header>
+
+    <!-- Aplicativo Principal -->
+    <div id="appScreen" class="app-container hidden">
+        <!-- Menu Lateral -->
+        <div class="sidebar">
             <div class="logo">
-                <span class="logo-hwt">Recepção HWT</span>
-            </div>
-            <div class="user-info">
-                <span class="user-name">Olá, <span id="current-user">Usuário</span></span>
-                <button class="logout-btn" id="logout-btn">Sair</button>
-            </div>
-        </header>
-        
-        <nav>
-            <ul>
-                <li><a href="#" class="nav-link" data-tab="quartos">Quartos <span id="quantidade-quartos" class="quantidade-info">0</span></a></li>
-                <li><a href="#" class="nav-link" data-tab="ocupados">Ocupados <span id="quantidade-hospedes" class="quantidade-info">0</span></a></li>
-                <li><a href="#" class="nav-link" data-tab="historico">Histórico</a></li>
-                <li><a href="#" class="nav-link" data-tab="backup">Backup</a></li>
-            </ul>
-        </nav>
-        
-        <div id="quartos" class="tab-content active">
-            <h2 class="page-title">Quartos</h2>
-            
-            <!-- Container para data e hora atual -->
-            <div class="data-hora-container">
-                <div class="data-atual" id="data-atual"></div>
-                <div class="hora-atual" id="hora-atual"></div>
+                <h2>Controle de Estoque</h2>
+                <p>Menu Principal</p>
             </div>
             
-            <div class="andar-selector">
-                <button class="andar-btn active" data-andar="terreo">Térreo</button>
-                <button class="andar-btn" data-andar="primeiro">Primeiro Andar</button>
-                <button class="andar-btn" data-andar="segundo">Segundo Andar</button>
-                <button class="andar-btn" data-andar="tenis">Tênis Academy</button>
-                <button class="andar-btn" data-andar="soccer">Soccer Academy</button>
+            <div class="menu-item active" onclick="showSection('dashboard')">
+                <span>📊</span>
+                <span class="menu-text">Painel</span>
             </div>
-            <div id="quartos-container" class="quartos-grid">
-                <!-- Quartos serão carregados aqui via JavaScript -->
+            <div class="menu-item" onclick="showSection('products')">
+                <span>📦</span>
+                <span class="menu-text">Produtos</span>
             </div>
-        </div>
-        
-        <div id="ocupados" class="tab-content">
-            <h2 class="page-title">Ocupados</h2>
-            <table id="tabela-hospedes">
-                <thead>
-                    <tr>
-                        <th>Quarto</th>
-                        <th>Hóspedes</th>
-                        <th>Documentos</th>
-                        <th>Telefones</th>
-                        <th>Pessoas</th>
-                        <th>Entrada</th>
-                        <th>Saída</th>
-                        <th>Ação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Dados serão preenchidos via JavaScript -->
-                </tbody>
-            </table>
-        </div>
-        
-        <div id="historico" class="tab-content">
-            <h2 class="page-title">Histórico</h2>
-            
-            <div class="historico-filtros">
-                <div class="form-group filtro-item">
-                    <label for="filtro-status">Status</label>
-                    <select id="filtro-status">
-                        <option value="todos">Todos</option>
-                        <option value="ativo">Ativos</option>
-                        <option value="finalizado">Finalizados</option>
-                        <option value="automatico">Auto Finalizados</option>
-                        <option value="manutencao">Manutenção</option>
-                    </select>
-                </div>
-                
-                <div class="form-group filtro-item">
-                    <label for="filtro-data-entrada">Data de Entrada</label>
-                    <input type="date" id="filtro-data-entrada">
-                </div>
-                
-                <div class="form-group filtro-item">
-                    <label for="filtro-quarto">Quarto</label>
-                    <input type="number" id="filtro-quarto" placeholder="Número do quarto">
-                </div>
+            <div class="menu-item" onclick="showSection('loans')">
+                <span>🔧</span>
+                <span class="menu-text">Empréstimos</span>
             </div>
-            
-            <div class="historico-accordion" id="historico-accordion">
-                <!-- Histórico será carregado aqui via JavaScript -->
+            <div class="menu-item" onclick="showSection('permanent')">
+                <span>🗑️</span>
+                <span class="menu-text">Retiradas</span>
+            </div>
+            <div class="menu-item" onclick="showSection('history')">
+                <span>📋</span>
+                <span class="menu-text">Histórico</span>
             </div>
         </div>
 
-        <div id="backup" class="tab-content">
-            <h2 class="page-title">Backup de Dados</h2>
-            
-            <div class="backup-section">
-                <h3 class="backup-title">Exportar Dados</h3>
-                <p>Exporte todos os dados do sistema para um arquivo JSON que pode ser usado em outro computador.</p>
-                <div class="backup-buttons">
-                    <button class="backup-btn export" id="export-btn">
-                        <i class="fas fa-download"></i> Exportar Dados
-                    </button>
+        <!-- Conteúdo Principal -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1 id="sectionTitle">Painel</h1>
+                <div class="user-info">
+                    <span class="user-name">admin</span>
+                    <button class="logout-btn" onclick="logout()">Sair</button>
                 </div>
             </div>
-            
-            <div class="backup-section">
-                <h3 class="backup-title">Importar Dados</h3>
-                <p>Importe dados de um arquivo JSON para substituir todos os dados atuais do sistema.</p>
-                <div class="backup-buttons">
-                    <label for="import-file" class="file-label">
-                        <i class="fas fa-upload"></i> Selecionar Arquivo
-                    </label>
-                    <input type="file" id="import-file" accept=".json" class="file-input">
-                    <button class="backup-btn import" id="import-btn" disabled>
-                        <i class="fas fa-file-import"></i> Importar Dados
-                    </button>
-                </div>
-                <div id="import-status" style="margin-top: 10px;"></div>
-            </div>
-            
-            <div class="backup-section">
-                <h3 class="backup-title">Informações do Sistema</h3>
-                <div class="info-box">
-                    <p><strong>Total de Hóspedes Ativos:</strong> <span id="info-hospedes-ativos">0</span></p>
-                    <p><strong>Total no Histórico:</strong> <span id="info-historico">0</span> registros</p>
-                    <p><strong>Total de Usuários:</strong> <span id="info-usuarios">0</span></p>
-                    <p><strong>Última Atualização:</strong> <span id="info-ultima-atualizacao">-</span></p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal para detalhes do quarto -->
-    <div id="modal-quarto" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modal-titulo">Detalhes do Quarto</h3>
-                <span class="close">&times;</span>
-            </div>
-            <div id="modal-conteudo">
-                <!-- Conteúdo será preenchido via JavaScript -->
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal para editar check-in -->
-    <div id="modal-editar-checkin" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modal-editar-titulo">Editar Check-in</h3>
-                <span class="close close-editar">&times;</span>
-            </div>
-            <form id="editar-checkin-form">
-                <input type="hidden" id="editar-quarto">
-                
-                <div class="form-group">
-                    <label for="editar-status">Status do Quarto</label>
-                    <select id="editar-status" required>
-                        <option value="disponivel">Disponível</option>
-                        <option value="ocupado">Ocupado</option>
-                    </select>
-                </div>
-                
-                <div id="editar-campos-ocupado">
-                    <div class="form-group">
-                        <label for="editar-num-pessoas">Número de Pessoas</label>
-                        <select id="editar-num-pessoas" required>
-                            <option value="1">1 Pessoa</option>
-                            <option value="2">2 Pessoas</option>
-                            <option value="3">3 Pessoas</option>
-                            <option value="4">4 Pessoas</option>
-                        </select>
-                    </div>
-                    
-                    <div id="editar-campos-hospedes">
-                        <!-- Campos dos hóspedes serão gerados dinamicamente -->
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="editar-data-entrada">Data de Entrada</label>
-                            <input type="date" id="editar-data-entrada" required>
+
+            <!-- Seção Painel (sem listas duplicadas) -->
+            <div id="dashboardSection">
+                <div class="stats-grid">
+                    <div class="stat-card" onclick="showSection('products')">
+                        <div class="stat-icon">
+                            <span>📦</span>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="editar-data-saida">Data de Saída</label>
-                            <input type="date" id="editar-data-saida" required>
+                        <div class="stat-info">
+                            <h3>Total de Produtos</h3>
+                            <div class="number" id="totalProducts">0</div>
+                            <div class="label">itens ativos</div>
                         </div>
                     </div>
-                    
-                    <div class="time-inputs">
-                        <div class="form-group">
-                            <label for="editar-hora-entrada">Hora de Entrada</label>
-                            <input type="time" id="editar-hora-entrada" required>
+                    <div class="stat-card" onclick="filterByLowStock()">
+                        <div class="stat-icon">
+                            <span>⚠️</span>
                         </div>
-                        
-                        <div class="form-group">
-                            <label for="editar-hora-saida">Hora de Saída</label>
-                            <input type="time" id="editar-hora-saida" required>
+                        <div class="stat-info">
+                            <h3>Estoque Baixo</h3>
+                            <div class="number" id="lowStockCount">0</div>
+                            <div class="label">produtos</div>
+                        </div>
+                    </div>
+                    <div class="stat-card" onclick="filterByActiveLoans()">
+                        <div class="stat-icon">
+                            <span>🔧</span>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Emprestados</h3>
+                            <div class="number" id="loanedCount">0</div>
+                            <div class="label">itens</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção Produtos -->
+            <div id="productsSection" class="hidden">
+                <div class="section">
+                    <div class="section-header">
+                        <h2 id="productsTitle">📦 Produtos Ativos</h2>
+                        <button onclick="openProductModal()">
+                            <span>+</span> Novo Produto
+                        </button>
+                    </div>
+
+                    <div class="filters">
+                        <input type="text" class="search-box" id="searchProduct" placeholder="Buscar por nome ou local..." onkeyup="filterProducts()">
+                        <div class="category-filter" id="categoryFilter"></div>
+                    </div>
+
+                    <div id="productsList"></div>
+                </div>
+            </div>
+
+            <!-- Seção Empréstimos -->
+            <div id="loansSection" class="hidden">
+                <div class="section">
+                    <div class="section-header">
+                        <h2>🔧 Gerenciar Empréstimos</h2>
+                        <button onclick="openLoanModal()">
+                            <span>+</span> Novo Empréstimo
+                        </button>
+                    </div>
+
+                    <div id="allLoansList"></div>
+                </div>
+            </div>
+
+            <!-- Seção Retiradas -->
+            <div id="permanentSection" class="hidden">
+                <div class="section">
+                    <div class="section-header">
+                        <h2>🗑️ Retiradas Permanentes</h2>
+                        <p style="color: #aaa;">Itens retirados para uso único (não serão devolvidos)</p>
+                    </div>
+
+                    <div id="permanentList"></div>
+                </div>
+            </div>
+
+            <!-- Seção Histórico -->
+            <div id="historySection" class="hidden">
+                <div class="section">
+                    <div class="section-header">
+                        <h2>📋 Histórico de Movimentações</h2>
+                        <div>
+                            <input type="date" id="historyDate" class="date-filter" onchange="loadHistory()">
                         </div>
                     </div>
 
-                    <!-- Campo de observação - APENAS UMA ABA -->
-                    <div class="form-group">
-                        <label for="editar-observacao">Observação (Opcional)</label>
-                        <textarea id="editar-observacao" placeholder="Digite alguma observação se necessário..."></textarea>
-                    </div>
+                    <div id="historyList"></div>
                 </div>
-                
-                <button type="submit">Salvar Alterações</button>
-                <button type="button" class="secondary-btn" id="cancelar-edicao">Cancelar</button>
-            </form>
+            </div>
         </div>
     </div>
 
-    <!-- Modal para manutenção direta -->
-    <div id="modal-manutencao-direta" class="modal">
+    <!-- Modal de Produto -->
+    <div id="productModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modal-manutencao-titulo">Colocar Quarto em Manutenção</h3>
-                <span class="close close-manutencao">&times;</span>
+                <h2 id="modalTitle">Novo Produto</h2>
+                <button class="close-btn" onclick="closeModal('productModal')">&times;</button>
             </div>
-            <form id="manutencao-direta-form">
-                <input type="hidden" id="manutencao-quarto">
-                
-                <div class="form-group">
-                    <label for="manutencao-observacao">Observação (Opcional)</label>
-                    <textarea id="manutencao-observacao" placeholder="Digite o motivo da manutenção..."></textarea>
-                </div>
-                
-                <button type="submit">Colocar em Manutenção</button>
-                <button type="button" class="secondary-btn" id="cancelar-manutencao">Cancelar</button>
-            </form>
+            <div class="modal-form">
+                <input type="text" id="productName" placeholder="Nome do produto">
+                <input type="text" id="productLocal" placeholder="Localização">
+                <select id="productCategory">
+                    <option value="">Selecione a categoria</option>
+                    <option value="Jardim">Jardim</option>
+                    <option value="Elétrica">Elétrica</option>
+                    <option value="Ferramentas">Ferramentas</option>
+                    <option value="EPI">EPI</option>
+                    <option value="Hidráulica">Hidráulica</option>
+                    <option value="Geral">Geral</option>
+                </select>
+                <input type="number" id="productQuantity" placeholder="Quantidade">
+                <input type="number" id="productMinQuantity" placeholder="Quantidade mínima">
+                <input type="hidden" id="editingProductId">
+                <button onclick="saveProduct()">Salvar</button>
+            </div>
         </div>
     </div>
-    
+
+    <!-- Modal de Empréstimo -->
+    <div id="loanModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Novo Empréstimo</h2>
+                <button class="close-btn" onclick="closeModal('loanModal')">&times;</button>
+            </div>
+            <div class="modal-form">
+                <input type="text" id="loanUserName" placeholder="Nome de quem está pegando">
+                <select id="loanProduct"></select>
+                <input type="number" id="loanQuantity" placeholder="Quantidade" value="1">
+                <div class="datetime-row">
+                    <input type="date" id="loanDate">
+                    <input type="time" id="loanTime" value="08:00">
+                </div>
+                <textarea id="loanObservation" placeholder="Observação"></textarea>
+                <button onclick="saveLoan()">Registrar Empréstimo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Devolução -->
+    <div id="returnModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Registrar Devolução</h2>
+                <button class="close-btn" onclick="closeModal('returnModal')">&times;</button>
+            </div>
+            <div class="modal-form">
+                <div style="background: #2a2a2a; padding: 16px; border-radius: 12px; margin-bottom: 16px;" id="returnInfo"></div>
+                <div class="datetime-row">
+                    <input type="date" id="returnDate">
+                    <input type="time" id="returnTime" value="08:00">
+                </div>
+                <textarea id="returnObservation" placeholder="Observação"></textarea>
+                <input type="hidden" id="returnLoanId">
+                <button onclick="saveReturn()">Confirmar Devolução</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Retirada Permanente -->
+    <div id="permanentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Registrar Retirada Permanente</h2>
+                <button class="close-btn" onclick="closeModal('permanentModal')">&times;</button>
+            </div>
+            <div class="modal-form">
+                <div style="background: #2a2a2a; padding: 16px; border-radius: 12px; margin-bottom: 16px;" id="permanentInfo"></div>
+                <input type="text" id="permanentUserName" placeholder="Nome de quem está retirando">
+                <input type="number" id="permanentQuantity" placeholder="Quantidade" value="1">
+                <div class="datetime-row">
+                    <input type="date" id="permanentDate">
+                    <input type="time" id="permanentTime" value="08:00">
+                </div>
+                <textarea id="permanentObservation" placeholder="Motivo da retirada (opcional)"></textarea>
+                <input type="hidden" id="permanentProductId">
+                <button onclick="savePermanent()">Confirmar Retirada</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Dados iniciais - QUARTO 204 REMOVIDO e SOCCER com até 4 pessoas
-        const quartos = {
-            terreo: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-            primeiro: [100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123],
-            segundo: [200, 201, 202, 203], // QUARTO 204 REMOVIDO
-            tenis: [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40],
-            soccer: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
-        };
-        
-        let usuarios = JSON.parse(localStorage.getItem('usuariosHWT')) || [
-            { nome: "Administrador", usuario: "admin", senha: "admin123" }
+        // DADOS INICIAIS
+        let products = JSON.parse(localStorage.getItem('products')) || [
+            { id: 1, name: 'Tesoura de Poda', local: 'Prateleira A1', category: 'Jardim', quantity: 8, minQuantity: 3 },
+            { id: 2, name: 'Alicate Universal', local: 'Gaveta 10', category: 'Elétrica', quantity: 5, minQuantity: 2 },
+            { id: 3, name: 'Martelo', local: 'Prateleira B1', category: 'Ferramentas', quantity: 10, minQuantity: 4 },
+            { id: 4, name: 'Luva de Raspa', local: 'Armário D1', category: 'EPI', quantity: 12, minQuantity: 5 },
+            { id: 5, name: 'Fita Veda-rosca', local: 'Gaveta 16', category: 'Hidráulica', quantity: 15, minQuantity: 5 },
+            { id: 6, name: 'Cadeado', local: 'Gaveta 17', category: 'Geral', quantity: 8, minQuantity: 3 }
         ];
         
-        let usuarioAtual = null;
-        let hospedesAtivos = JSON.parse(localStorage.getItem('hospedesAtivos')) || [];
-        let historico = JSON.parse(localStorage.getItem('historico')) || [];
-        let andarAtual = 'terreo';
-        let intervaloAtualizacao;
-        let ultimaAtualizacao = localStorage.getItem('ultimaAtualizacaoHWT') || null;
+        let loans = JSON.parse(localStorage.getItem('loans')) || [];
+        let movements = JSON.parse(localStorage.getItem('movements')) || [];
+        let currentUser = null;
+        let currentCategory = 'todos';
 
-        // Inicialização
-        document.addEventListener('DOMContentLoaded', function() {
-            // Verificar se já existe um usuário logado
-            const usuarioSalvo = localStorage.getItem('usuarioAtualHWT');
-            if (usuarioSalvo) {
-                usuarioAtual = JSON.parse(usuarioSalvo);
-                mostrarSistemaPrincipal();
-            }
+        // LOGIN
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
             
-            // Configurar abas de login/cadastro
-            document.querySelectorAll('.login-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    const tabId = this.getAttribute('data-tab');
-                    
-                    // Ativar aba clicada
-                    document.querySelectorAll('.login-tab').forEach(t => {
-                        t.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                    
-                    // Mostrar formulário correspondente
-                    document.querySelectorAll('.login-form').forEach(form => {
-                        form.classList.remove('active');
-                    });
-                    document.getElementById(`${tabId}-form`).classList.add('active');
-                });
-            });
-            
-            // Configurar formulário de login
-            document.getElementById('login-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                fazerLogin();
-            });
-            
-            // Configurar formulário de cadastro
-            document.getElementById('register-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                criarUsuario();
-            });
-            
-            // Configurar botão de logout
-            document.getElementById('logout-btn').addEventListener('click', function() {
-                fazerLogout();
-            });
-            
-            // Configurar datas mínimas - Permitir datas passadas
-            document.getElementById('editar-data-entrada').min = '2020-01-01';
-            document.getElementById('editar-data-saida').min = '2020-01-01';
-            
-            // Configurar mudança de status no formulário de edição
-            document.getElementById('editar-status').addEventListener('change', function() {
-                const camposOcupado = document.getElementById('editar-campos-ocupado');
-                if (this.value === 'ocupado') {
-                    camposOcupado.style.display = 'block';
-                } else {
-                    camposOcupado.style.display = 'none';
-                }
-            });
-            
-            // Configurar mudança no número de pessoas
-            document.getElementById('editar-num-pessoas').addEventListener('change', function() {
-                atualizarCamposHospedes();
-            });
-            
-            // Configurar filtros do histórico
-            document.getElementById('filtro-status').addEventListener('change', carregarHistorico);
-            document.getElementById('filtro-data-entrada').addEventListener('change', carregarHistorico);
-            document.getElementById('filtro-quarto').addEventListener('input', carregarHistorico);
-            
-            // Configurar backup
-            document.getElementById('export-btn').addEventListener('click', exportarDados);
-            document.getElementById('import-file').addEventListener('change', function(e) {
-                document.getElementById('import-btn').disabled = !e.target.files.length;
-            });
-            document.getElementById('import-btn').addEventListener('click', importarDados);
-            
-            // Carregar dados iniciais
-            carregarQuartos();
-            carregarHospedesAtivos();
-            carregarHistorico();
-            atualizarQuantidades();
-            atualizarInfoBackup();
-            
-            // Configurar navegação por abas
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const tabId = this.getAttribute('data-tab');
-                    
-                    // Esconder todas as abas
-                    document.querySelectorAll('.tab-content').forEach(tab => {
-                        tab.classList.remove('active');
-                    });
-                    
-                    // Mostrar a aba selecionada
-                    document.getElementById(tabId).classList.add('active');
-                    
-                    // Atualizar informações do backup se for a aba de backup
-                    if (tabId === 'backup') {
-                        atualizarInfoBackup();
-                    }
-                });
-            });
-            
-            // Configurar seletor de andar
-            document.querySelectorAll('.andar-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.andar-btn').forEach(b => {
-                        b.classList.remove('active');
-                    });
-                    this.classList.add('active');
-                    andarAtual = this.getAttribute('data-andar');
-                    carregarQuartos();
-                });
-            });
-            
-            // Configurar formulário de edição
-            document.getElementById('editar-checkin-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                salvarEdicaoCheckin();
-            });
-            
-            // Configurar botão de cancelar edição
-            document.getElementById('cancelar-edicao').addEventListener('click', function() {
-                document.getElementById('modal-editar-checkin').style.display = 'none';
-            });
-            
-            // Configurar formulário de manutenção direta
-            document.getElementById('manutencao-direta-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                salvarManutencaoDireta();
-            });
-            
-            // Configurar botão de cancelar manutenção
-            document.getElementById('cancelar-manutencao').addEventListener('click', function() {
-                document.getElementById('modal-manutencao-direta').style.display = 'none';
-            });
-            
-            // Configurar modais
-            document.querySelector('.close').addEventListener('click', function() {
-                document.getElementById('modal-quarto').style.display = 'none';
-            });
-            
-            document.querySelector('.close-editar').addEventListener('click', function() {
-                document.getElementById('modal-editar-checkin').style.display = 'none';
-            });
-
-            document.querySelector('.close-manutencao').addEventListener('click', function() {
-                document.getElementById('modal-manutencao-direta').style.display = 'none';
-            });
-            
-            // Fechar modal ao clicar fora
-            window.addEventListener('click', function(e) {
-                if (e.target === document.getElementById('modal-quarto')) {
-                    document.getElementById('modal-quarto').style.display = 'none';
-                }
-                if (e.target === document.getElementById('modal-editar-checkin')) {
-                    document.getElementById('modal-editar-checkin').style.display = 'none';
-                }
-                if (e.target === document.getElementById('modal-manutencao-direta')) {
-                    document.getElementById('modal-manutencao-direta').style.display = 'none';
-                }
-            });
-        });
-
-        // FUNÇÃO: Abrir modal de manutenção direta
-        function abrirManutencaoDireta(quarto) {
-            const modal = document.getElementById('modal-manutencao-direta');
-            const titulo = document.getElementById('modal-manutencao-titulo');
-            
-            titulo.textContent = `Colocar Quarto ${quarto} em Manutenção`;
-            document.getElementById('manutencao-quarto').value = quarto;
-            document.getElementById('manutencao-observacao').value = '';
-            
-            modal.style.display = 'flex';
-        }
-
-        // FUNÇÃO: Finalizar manutenção diretamente
-        function finalizarManutencaoDireta(quarto) {
-            const hospedeIndex = hospedesAtivos.findIndex(h => h.quarto === quarto);
-            
-            if (hospedeIndex !== -1) {
-                // Remover da lista de hóspedes ativos
-                hospedesAtivos.splice(hospedeIndex, 1);
-                
-                salvarDados();
-                
-                // Atualizar visualizações
-                carregarQuartos();
-                carregarHospedesAtivos();
-                carregarHistorico();
-                
-                // Fechar modal se estiver aberto
-                document.getElementById('modal-quarto').style.display = 'none';
-                
-                // Mostrar mensagem de sucesso
-                alert(`Manutenção do quarto ${quarto} finalizada com sucesso! Quarto agora está disponível.`);
-            }
-        }
-
-        // FUNÇÃO: Salvar manutenção direta
-        function salvarManutencaoDireta() {
-            const quarto = parseInt(document.getElementById('manutencao-quarto').value);
-            const observacao = document.getElementById('manutencao-observacao').value;
-            
-            const hospedeIndex = hospedesAtivos.findIndex(h => h.quarto === quarto);
-            
-            // Criar registro de manutenção
-            const hospedeManutencao = {
-                quarto,
-                status: 'manutencao',
-                observacao,
-                dataRegistro: new Date().toISOString().split('T')[0],
-                horaRegistro: new Date().toTimeString().split(' ')[0].substring(0, 5)
-            };
-            
-            if (hospedeIndex !== -1) {
-                // Se já existe um registro, atualizar para manutenção
-                hospedesAtivos[hospedeIndex] = hospedeManutencao;
+            if (username === 'admin' && password === '123456') {
+                currentUser = { name: username };
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('appScreen').classList.remove('hidden');
+                updateDashboard();
+                loadProducts();
+                loadCategoryFilter();
+                loadLoanProductSelect();
+                loadPermanentItems();
+                loadHistory();
             } else {
-                // Adicionar novo registro de manutenção
-                hospedesAtivos.push(hospedeManutencao);
+                alert('Usuário ou senha incorretos! Use admin / 123456');
             }
-            
-            // Registrar no histórico
-            const registroHistorico = {
-                ...hospedeManutencao,
-                dataRegistro: new Date().toISOString().split('T')[0],
-                horaRegistro: new Date().toTimeString().split(' ')[0].substring(0, 5)
-            };
-            historico.unshift(registroHistorico);
-            
-            salvarDados();
-            
-            // Fechar modal
-            document.getElementById('modal-manutencao-direta').style.display = 'none';
-            
-            // Atualizar visualizações
-            carregarQuartos();
-            carregarHospedesAtivos();
-            carregarHistorico();
-            
-            // Mostrar mensagem de sucesso
-            alert(`Quarto ${quarto} colocado em manutenção com sucesso!`);
         }
 
-        // Função para exportar dados
-        function exportarDados() {
-            const dados = {
-                hospedesAtivos: hospedesAtivos,
-                historico: historico,
-                usuarios: usuarios,
-                ultimaAtualizacao: ultimaAtualizacao,
-                dataExportacao: new Date().toISOString(),
-                versaoSistema: '1.0'
-            };
-            
-            const dadosStr = JSON.stringify(dados, null, 2);
-            const blob = new Blob([dadosStr], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `backup_hotel_${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            
-            alert('Dados exportados com sucesso!');
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('appScreen').classList.add('hidden');
         }
 
-        // Função para importar dados
-        function importarDados() {
-            const fileInput = document.getElementById('import-file');
-            const file = fileInput.files[0];
+        // NAVEGAÇÃO
+        function showSection(section) {
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            event.currentTarget.classList.add('active');
             
-            if (!file) {
-                alert('Por favor, selecione um arquivo para importar.');
-                return;
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('productsSection').classList.add('hidden');
+            document.getElementById('loansSection').classList.add('hidden');
+            document.getElementById('historySection').classList.add('hidden');
+            document.getElementById('permanentSection').classList.add('hidden');
+            
+            document.getElementById(section + 'Section').classList.remove('hidden');
+            
+            const titles = {
+                'dashboard': 'Painel',
+                'products': 'Produtos',
+                'loans': 'Empréstimos',
+                'history': 'Histórico',
+                'permanent': 'Retiradas'
+            };
+            document.getElementById('sectionTitle').textContent = titles[section];
+            
+            if (section === 'products') {
+                loadProducts();
+                loadCategoryFilter();
+                document.getElementById('productsTitle').textContent = '📦 Produtos Ativos';
+            } else if (section === 'loans') {
+                loadAllLoans();
+            } else if (section === 'history') {
+                loadHistory();
+            } else if (section === 'permanent') {
+                loadPermanentItems();
             }
+        }
+
+        // FILTROS ESPECIAIS (para os cards)
+        function filterByLowStock() {
+            showSection('products');
+            // Aqui você pode definir um filtro especial, mas por enquanto só vai para produtos
+            // Idealmente, você aplicaria um filtro de "estoque baixo" automaticamente
+        }
+
+        function filterByActiveLoans() {
+            showSection('loans');
+            // Vai para a seção de empréstimos
+        }
+
+        // DASHBOARD
+        function updateDashboard() {
+            document.getElementById('totalProducts').textContent = products.length;
             
-            const reader = new FileReader();
+            const lowStock = products.filter(p => p.quantity <= p.minQuantity);
+            document.getElementById('lowStockCount').textContent = lowStock.length;
             
-            reader.onload = function(e) {
-                try {
-                    const dados = JSON.parse(e.target.result);
-                    
-                    // Validar estrutura básica do arquivo
-                    if (!dados.hospedesAtivos || !dados.historico || !dados.usuarios) {
-                        throw new Error('Arquivo inválido: estrutura de dados incorreta');
-                    }
-                    
-                    // Confirmar substituição
-                    if (confirm('ATENÇÃO: Isso substituirá TODOS os dados atuais do sistema. Tem certeza que deseja continuar?')) {
-                        // Substituir dados
-                        hospedesAtivos = dados.hospedesAtivos;
-                        historico = dados.historico;
-                        usuarios = dados.usuarios;
-                        ultimaAtualizacao = dados.ultimaAtualizacao || new Date().toISOString();
-                        
-                        // Salvar dados
-                        salvarDados();
-                        
-                        // Atualizar interface
-                        carregarQuartos();
-                        carregarHospedesAtivos();
-                        carregarHistorico();
-                        atualizarQuantidades();
-                        atualizarInfoBackup();
-                        
-                        // Limpar arquivo selecionado
-                        fileInput.value = '';
-                        document.getElementById('import-btn').disabled = true;
-                        
-                        document.getElementById('import-status').innerHTML = 
-                            '<div class="alert alert-success">Dados importados com sucesso!</div>';
-                        
-                        alert('Dados importados com sucesso! O sistema foi atualizado.');
-                    }
-                } catch (error) {
-                    console.error('Erro ao importar dados:', error);
-                    document.getElementById('import-status').innerHTML = 
-                        '<div class="alert alert-error">Erro ao importar arquivo: ' + error.message + '</div>';
+            const activeLoans = loans.filter(l => !l.returned);
+            document.getElementById('loanedCount').textContent = activeLoans.length;
+        }
+
+        // Utilitário para formatar data/hora
+        function formatDateTime(datetimeStr) {
+            if (!datetimeStr) return '';
+            const [date, time] = datetimeStr.split(' ');
+            return `${date} ${time}`;
+        }
+
+        // PRODUTOS
+        function loadCategoryFilter() {
+            const cats = ['todos', ...new Set(products.map(p => p.category))];
+            const filterDiv = document.getElementById('categoryFilter');
+            
+            filterDiv.innerHTML = cats.map(cat => 
+                `<button class="${cat === 'todos' ? 'active' : ''}" onclick="filterByCategory('${cat}')">
+                    ${cat === 'todos' ? 'Todos' : cat}
+                </button>`
+            ).join('');
+        }
+
+        function filterByCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('#categoryFilter button').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === (cat === 'todos' ? 'Todos' : cat)) {
+                    btn.classList.add('active');
                 }
-            };
-            
-            reader.onerror = function() {
-                document.getElementById('import-status').innerHTML = 
-                    '<div class="alert alert-error">Erro ao ler o arquivo.</div>';
-            };
-            
-            reader.readAsText(file);
-        }
-
-        // Função para atualizar informações do backup
-        function atualizarInfoBackup() {
-            document.getElementById('info-hospedes-ativos').textContent = hospedesAtivos.filter(h => h.status === 'ativo').length;
-            document.getElementById('info-historico').textContent = historico.length;
-            document.getElementById('info-usuarios').textContent = usuarios.length;
-            
-            if (ultimaAtualizacao) {
-                const data = new Date(ultimaAtualizacao);
-                document.getElementById('info-ultima-atualizacao').textContent = 
-                    data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR');
-            } else {
-                document.getElementById('info-ultima-atualizacao').textContent = 'Nunca';
-            }
-        }
-
-        // Função para atualizar campos de hóspedes dinamicamente
-        function atualizarCamposHospedes() {
-            const numPessoas = parseInt(document.getElementById('editar-num-pessoas').value);
-            const container = document.getElementById('editar-campos-hospedes');
-            container.innerHTML = '';
-            
-            // Determinar o número máximo de pessoas baseado no setor
-            const quarto = parseInt(document.getElementById('editar-quarto').value);
-            const maxPessoas = (andarAtual === 'soccer') ? 4 : 3;
-            
-            // Atualizar as opções disponíveis no select
-            const selectNumPessoas = document.getElementById('editar-num-pessoas');
-            selectNumPessoas.innerHTML = '';
-            
-            for (let i = 1; i <= maxPessoas; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = `${i} Pessoa${i > 1 ? 's' : ''}`;
-                selectNumPessoas.appendChild(option);
-            }
-            
-            // Definir o valor atual
-            selectNumPessoas.value = Math.min(numPessoas, maxPessoas);
-            
-            // Criar campos para cada hóspede
-            for (let i = 1; i <= selectNumPessoas.value; i++) {
-                const hospedeSecao = document.createElement('div');
-                hospedeSecao.className = 'hospede-secao';
-                hospedeSecao.innerHTML = `
-                    <div class="hospede-titulo">Hóspede ${i} ${i === 1 ? '(Principal)' : ''}</div>
-                    <div class="form-group">
-                        <label for="editar-nome-hospede${i}">Nome Completo</label>
-                        <input type="text" id="editar-nome-hospede${i}" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="editar-documento${i}">Documento de Identificação</label>
-                        <input type="text" id="editar-documento${i}" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="editar-telefone${i}">Telefone para Contato</label>
-                        <input type="tel" id="editar-telefone${i}" required>
-                    </div>
-                `;
-                container.appendChild(hospedeSecao);
-            }
-        }
-
-        // Função para atualizar data e hora atual
-        function atualizarDataHora() {
-            const agora = new Date();
-            
-            // Formatar data (Brasil)
-            const dataFormatada = agora.toLocaleDateString('pt-BR', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
             });
-            
-            // Formatar hora (Brasil)
-            const horaFormatada = agora.toLocaleTimeString('pt-BR', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            
-            // Atualizar elementos na página
-            document.getElementById('data-atual').textContent = `Data: ${dataFormatada}`;
-            document.getElementById('hora-atual').textContent = `Hora: ${horaFormatada}`;
-            
-            // Verificar se algum quarto precisa ser liberado automaticamente
-            verificarLiberacaoAutomatica();
+            filterProducts();
         }
 
-        // Função para verificar e liberar quartos automaticamente
-        function verificarLiberacaoAutomatica() {
-            const agora = new Date();
-            const dataAtual = agora.toISOString().split('T')[0];
-            const horaAtual = agora.toTimeString().split(' ')[0].substring(0, 5);
-            
-            let quartosLiberados = false;
-            
-            // Verificar cada hóspede ativo
-            for (let i = hospedesAtivos.length - 1; i >= 0; i--) {
-                const hospede = hospedesAtivos[i];
-                
-                // Pular quartos em manutenção
-                if (hospede.status === 'manutencao') continue;
-                
-                // Verificar se a data de saída é hoje ou anterior
-                if (hospede.saida <= dataAtual) {
-                    // Se for hoje, verificar se já passou do horário de saída
-                    if (hospede.saida === dataAtual) {
-                        if (hospede.horaSaida && horaAtual >= hospede.horaSaida) {
-                            // Liberar quarto automaticamente
-                            liberarQuartoAutomaticamente(hospede.quarto, i);
-                            quartosLiberados = true;
-                        }
-                    } else {
-                        // Se a data de saída já passou, liberar quarto
-                        liberarQuartoAutomaticamente(hospede.quarto, i);
-                        quartosLiberados = true;
-                    }
-                }
-            }
-            
-            // Se algum quarto foi liberado, atualizar a interface
-            if (quartosLiberados) {
-                carregarQuartos();
-                carregarHospedesAtivos();
-                carregarHistorico();
-                atualizarQuantidades();
-            }
-        }
-
-        // Função para liberar quarto automaticamente
-        function liberarQuartoAutomaticamente(quarto, index) {
-            const hospede = hospedesAtivos[index];
-            
-            // Atualizar o registro no histórico para marcar como finalizado
-            const registroHistorico = historico.find(h => 
-                h.quarto === quarto && h.status === 'ativo' && !h.dataSaidaReal
+        function filterProducts() {
+            const search = document.getElementById('searchProduct').value.toLowerCase();
+            const filtered = products.filter(p => 
+                (currentCategory === 'todos' || p.category === currentCategory) &&
+                (p.name.toLowerCase().includes(search) || p.local.toLowerCase().includes(search))
             );
-            
-            if (registroHistorico) {
-                registroHistorico.status = 'finalizado';
-                registroHistorico.dataSaidaReal = new Date().toISOString().split('T')[0];
-                delete registroHistorico.horaSaidaReal;
-                registroHistorico.checkoutAutomatico = true;
-            } else {
-                // Criar um registro no histórico se não encontrou
-                const novoRegistroHistorico = {
-                    ...hospede,
-                    status: 'finalizado',
-                    dataSaidaReal: new Date().toISOString().split('T')[0],
-                    checkoutAutomatico: true,
-                    dataRegistro: new Date().toISOString().split('T')[0],
-                    horaRegistro: new Date().toTimeString().split(' ')[0].substring(0, 5)
-                };
-                historico.unshift(novoRegistroHistorico);
-            }
-            
-            // Remover dos hóspedes ativos
-            hospedesAtivos.splice(index, 1);
-            
-            // Salvar dados e notificar mudança
-            salvarDados();
+            displayProducts(filtered);
         }
-        
-        // Função para fazer login
-        function fazerLogin() {
-            const usuario = document.getElementById('login-username').value;
-            const senha = document.getElementById('login-password').value;
+
+        function displayProducts(list) {
+            const activeLoans = loans.filter(l => !l.returned);
             
-            const usuarioEncontrado = usuarios.find(u => u.usuario === usuario && u.senha === senha);
-            
-            if (usuarioEncontrado) {
-                usuarioAtual = usuarioEncontrado;
-                localStorage.setItem('usuarioAtualHWT', JSON.stringify(usuarioAtual));
-                mostrarSistemaPrincipal();
-            } else {
-                alert('Usuário ou senha incorretos!');
+            document.getElementById('productsList').innerHTML = list.map(p => {
+                const loaned = activeLoans.filter(l => l.productId === p.id).reduce((s, l) => s + l.quantity, 0);
+                const available = p.quantity - loaned;
+                
+                return `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <h4>${p.name}</h4>
+                            <p>📍 ${p.local}</p>
+                            <p>🏷️ ${p.category}</p>
+                            ${loaned > 0 ? `<small>🔧 ${loaned} emprestado(s)</small>` : ''}
+                        </div>
+                        <div class="item-status ${p.quantity <= p.minQuantity ? 'status-low' : 'status-ok'}">
+                            Disponível: ${available}
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn-edit" onclick="editProduct(${p.id})">Editar</button>
+                            <button class="btn-loan" onclick="openLoanModal(${p.id})">Emprestar</button>
+                            <button class="btn-permanent" onclick="openPermanentModal(${p.id})">Retirar</button>
+                            <button class="btn-delete" onclick="deleteProduct(${p.id})">Excluir</button>
+                        </div>
+                    </div>
+                `;
+            }).join('') || '<div class="empty-state"><span>🔍</span><p>Nenhum item encontrado</p></div>';
+        }
+
+        function loadProducts() {
+            filterProducts();
+        }
+
+        function openProductModal() {
+            document.getElementById('modalTitle').textContent = 'Novo Produto';
+            document.getElementById('productName').value = '';
+            document.getElementById('productLocal').value = '';
+            document.getElementById('productCategory').value = '';
+            document.getElementById('productQuantity').value = '';
+            document.getElementById('productMinQuantity').value = '';
+            document.getElementById('editingProductId').value = '';
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        function editProduct(id) {
+            const p = products.find(p => p.id === id);
+            if (p) {
+                document.getElementById('modalTitle').textContent = 'Editar Produto';
+                document.getElementById('productName').value = p.name;
+                document.getElementById('productLocal').value = p.local;
+                document.getElementById('productCategory').value = p.category;
+                document.getElementById('productQuantity').value = p.quantity;
+                document.getElementById('productMinQuantity').value = p.minQuantity;
+                document.getElementById('editingProductId').value = id;
+                document.getElementById('productModal').classList.add('active');
             }
         }
-        
-        // Função para criar usuário
-        function criarUsuario() {
-            const nome = document.getElementById('register-name').value;
-            const usuario = document.getElementById('register-username').value;
-            const senha = document.getElementById('register-password').value;
-            const confirmarSenha = document.getElementById('register-confirm-password').value;
+
+        function saveProduct() {
+            const id = document.getElementById('editingProductId').value;
+            const product = {
+                name: document.getElementById('productName').value,
+                local: document.getElementById('productLocal').value,
+                category: document.getElementById('productCategory').value,
+                quantity: parseInt(document.getElementById('productQuantity').value) || 0,
+                minQuantity: parseInt(document.getElementById('productMinQuantity').value) || 0
+            };
             
-            // Verificar se as senhas coincidem
-            if (senha !== confirmarSenha) {
-                alert('As senhas não coincidem!');
+            if (!product.name || !product.local || !product.category) {
+                alert('Preencha todos os campos!');
                 return;
             }
             
-            // Verificar se o usuário já existe
-            if (usuarios.find(u => u.usuario === usuario)) {
-                alert('Este nome de usuário já está em uso!');
+            if (id) {
+                const index = products.findIndex(p => p.id == id);
+                products[index] = { ...products[index], ...product };
+            } else {
+                product.id = Date.now();
+                products.push(product);
+            }
+            
+            localStorage.setItem('products', JSON.stringify(products));
+            closeModal('productModal');
+            loadProducts();
+            updateDashboard();
+            loadCategoryFilter();
+            loadLoanProductSelect();
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Excluir permanentemente este item?')) {
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('products', JSON.stringify(products));
+                loadProducts();
+                updateDashboard();
+                loadCategoryFilter();
+                loadPermanentItems();
+            }
+        }
+
+        // EMPRÉSTIMOS
+        function loadLoanProductSelect() {
+            const select = document.getElementById('loanProduct');
+            const activeLoans = loans.filter(l => !l.returned);
+            
+            select.innerHTML = '<option value="">Selecione um item</option>' +
+                products.map(p => {
+                    const loaned = activeLoans.filter(l => l.productId === p.id).reduce((s, l) => s + l.quantity, 0);
+                    const available = p.quantity - loaned;
+                    return `<option value="${p.id}" ${available <= 0 ? 'disabled' : ''}>
+                        ${p.name} (Disponível: ${available})
+                    </option>`;
+                }).join('');
+        }
+
+        function openLoanModal(productId = null) {
+            document.getElementById('loanUserName').value = '';
+            document.getElementById('loanQuantity').value = '1';
+            document.getElementById('loanDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('loanTime').value = new Date().toTimeString().slice(0,5);
+            document.getElementById('loanObservation').value = '';
+            if (productId) document.getElementById('loanProduct').value = productId;
+            document.getElementById('loanModal').classList.add('active');
+        }
+
+        function saveLoan() {
+            const user = document.getElementById('loanUserName').value;
+            const pid = parseInt(document.getElementById('loanProduct').value);
+            const qty = parseInt(document.getElementById('loanQuantity').value);
+            const date = document.getElementById('loanDate').value;
+            const time = document.getElementById('loanTime').value;
+            
+            if (!user || !pid || !qty || !date || !time) {
+                alert('Preencha todos os campos!');
                 return;
             }
             
-            // Verificar limite de usuários (máximo 4)
-            if (usuarios.length >= 4) {
-                alert('Limite máximo de 4 usuários atingido! Não é possível criar mais usuários.');
+            const product = products.find(p => p.id === pid);
+            const datetime = `${date} ${time}`;
+            
+            loans.push({
+                id: Date.now(),
+                userName: user,
+                productId: pid,
+                productName: product.name,
+                productLocal: product.local,
+                quantity: qty,
+                datetime: datetime,
+                returned: false
+            });
+            
+            movements.push({
+                id: Date.now() + 1,
+                productId: pid,
+                productName: product.name,
+                quantity: qty,
+                datetime: datetime,
+                type: 'loan',
+                observation: `Emprestado para ${user}`
+            });
+            
+            localStorage.setItem('loans', JSON.stringify(loans));
+            localStorage.setItem('movements', JSON.stringify(movements));
+            
+            closeModal('loanModal');
+            updateDashboard();
+            loadProducts();
+            loadLoanProductSelect();
+            showSection('dashboard');
+        }
+
+        function loadAllLoans() {
+            const list = document.getElementById('allLoansList');
+            const active = loans.filter(l => !l.returned);
+            const returned = loans.filter(l => l.returned);
+            
+            if (active.length === 0 && returned.length === 0) {
+                list.innerHTML = '<div class="empty-state"><span>📭</span><p>Nenhum empréstimo registrado</p></div>';
                 return;
             }
             
-            // Adicionar novo usuário
-            const novoUsuario = { nome, usuario, senha };
-            usuarios.push(novoUsuario);
-            localStorage.setItem('usuariosHWT', JSON.stringify(usuarios));
+            let html = '<h3 style="margin-bottom: 16px; color: #f97316;">🔧 Empréstimos Ativos</h3>';
             
-            alert('Usuário criado com sucesso! Faça login para continuar.');
-            
-            // Limpar formulário e voltar para a tela de login
-            document.getElementById('register-form').reset();
-            document.querySelector('.login-tab[data-tab="login"]').click();
-        }
-        
-        // Função para fazer logout
-        function fazerLogout() {
-            usuarioAtual = null;
-            localStorage.removeItem('usuarioAtualHWT');
-            document.getElementById('login-screen').style.display = 'flex';
-            document.getElementById('main-system').style.display = 'none';
-            document.getElementById('login-form').reset();
-            
-            // Parar a atualização da data e hora
-            if (intervaloAtualizacao) {
-                clearInterval(intervaloAtualizacao);
-            }
-        }
-        
-        // Função para mostrar o sistema principal
-        function mostrarSistemaPrincipal() {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('main-system').style.display = 'block';
-            document.getElementById('current-user').textContent = usuarioAtual.nome;
-            
-            // Iniciar atualização da data e hora
-            atualizarDataHora();
-            intervaloAtualizacao = setInterval(atualizarDataHora, 1000);
-        }
-        
-        // Função para carregar quartos na visualização - CORRIGIDA: Removido botão de manutenção
-        function carregarQuartos() {
-            const container = document.getElementById('quartos-container');
-            container.innerHTML = '';
-            
-            quartos[andarAtual].forEach(numero => {
-                const hospede = hospedesAtivos.find(h => h.quarto === numero);
-                let status = hospede ? 'ocupado' : 'disponivel';
-                const pessoasTexto = hospede ? `${hospede.numPessoas} pessoa${hospede.numPessoas > 1 ? 's' : ''}` : '';
-                
-                // Verificar se o quarto está em manutenção
-                if (hospede && hospede.status === 'manutencao') {
-                    status = 'manutencao';
-                }
-                
-                const quartoElement = document.createElement('div');
-                quartoElement.className = `quarto ${status}`;
-                quartoElement.innerHTML = `
-                    <div class="quarto-numero">${numero}</div>
-                    <div class="quarto-status">
-                        <i class="fas ${status === 'manutencao' ? 'fa-tools' : 'fa-bed'}"></i>
+            if (active.length > 0) {
+                html += active.map(l => `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <h4>${l.productName}</h4>
+                            <p>👤 ${l.userName}</p>
+                            <p>📍 ${l.productLocal}</p>
+                            <small>📅 ${formatDateTime(l.datetime)}</small>
+                        </div>
+                        <div class="item-status status-loan">
+                            ${l.quantity} unid.
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn-return" onclick="openReturnModal(${l.id})">Devolver</button>
+                        </div>
                     </div>
-                    <div class="quarto-pessoas">${pessoasTexto}</div>
-                    <button class="edit-btn">Editar</button>
-                `;
-                
-                quartoElement.addEventListener('click', function(e) {
-                    if (!e.target.classList.contains('edit-btn')) {
-                        mostrarDetalhesQuarto(numero, hospede);
-                    }
-                });
-                
-                // Adicionar evento ao botão de edição
-                quartoElement.querySelector('.edit-btn').addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    abrirEdicaoCheckin(numero, hospede);
-                });
-                
-                container.appendChild(quartoElement);
-            });
-            
-            atualizarQuantidades();
-        }
-        
-        // Função para carregar hóspedes ativos
-        function carregarHospedesAtivos() {
-            const tbody = document.querySelector('#tabela-hospedes tbody');
-            tbody.innerHTML = '';
-            
-            hospedesAtivos.forEach(hospede => {
-                // Pular quartos em manutenção da lista de ocupados
-                if (hospede.status === 'manutencao') return;
-                
-                const nomesHospedes = hospede.nomes ? hospede.nomes.join(', ') : hospede.nome;
-                const documentosHospedes = hospede.documentos ? hospede.documentos.join(', ') : hospede.documento;
-                const telefonesHospedes = hospede.telefones ? hospede.telefones.join(', ') : hospede.telefone;
-                
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${hospede.quarto}</td>
-                    <td>${nomesHospedes}</td>
-                    <td>${documentosHospedes}</td>
-                    <td>${telefonesHospedes}</td>
-                    <td>${hospede.numPessoas}</td>
-                    <td>${formatarDataHora(hospede.entrada, hospede.horaEntrada)}</td>
-                    <td>${formatarDataHora(hospede.saida, hospede.horaSaida)}</td>
-                    <td>
-                        <button class="edit-btn" data-quarto="${hospede.quarto}">Editar</button>
-                        <button class="checkout-btn" data-quarto="${hospede.quarto}">Check-out</button>
-                    </td>
-                `;
-                
-                tbody.appendChild(tr);
-            });
-            
-            // Adicionar eventos aos botões de check-out
-            document.querySelectorAll('.checkout-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const quarto = parseInt(this.getAttribute('data-quarto'));
-                    fazerCheckout(quarto);
-                });
-            });
-            
-            // Adicionar eventos aos botões de edição
-            document.querySelectorAll('.edit-btn').forEach(btn => {
-                if (btn.getAttribute('data-quarto')) {
-                    btn.addEventListener('click', function() {
-                        const quarto = parseInt(this.getAttribute('data-quarto'));
-                        const hospede = hospedesAtivos.find(h => h.quarto === quarto);
-                        abrirEdicaoCheckin(quarto, hospede);
-                    });
-                }
-            });
-            
-            atualizarQuantidades();
-        }
-        
-        // Função para carregar histórico
-        function carregarHistorico() {
-            const container = document.getElementById('historico-accordion');
-            container.innerHTML = '';
-            
-            // Aplicar filtros
-            const filtroStatus = document.getElementById('filtro-status').value;
-            const filtroDataEntrada = document.getElementById('filtro-data-entrada').value;
-            const filtroQuarto = document.getElementById('filtro-quarto').value;
-            
-            let historicoFiltrado = [...historico];
-            
-            // Filtrar por status
-            if (filtroStatus !== 'todos') {
-                historicoFiltrado = historicoFiltrado.filter(item => {
-                    if (filtroStatus === 'ativo') return item.status === 'ativo';
-                    if (filtroStatus === 'finalizado') return item.status === 'finalizado' && !item.checkoutAutomatico;
-                    if (filtroStatus === 'automatico') return item.checkoutAutomatico;
-                    if (filtroStatus === 'manutencao') return item.status === 'manutencao';
-                    return true;
-                });
+                `).join('');
+            } else {
+                html += '<p style="color: #aaa; padding: 16px;">Nenhum empréstimo ativo</p>';
             }
             
-            // Filtrar por data de entrada
-            if (filtroDataEntrada) {
-                historicoFiltrado = historicoFiltrado.filter(item => item.entrada === filtroDataEntrada);
-            }
-            
-            // Filtrar por quarto
-            if (filtroQuarto) {
-                historicoFiltrado = historicoFiltrado.filter(item => item.quarto.toString().includes(filtroQuarto));
-            }
-            
-            // Ordenar histórico por data de entrada (mais recentes primeiro)
-            historicoFiltrado.sort((a, b) => {
-                const dataA = new Date(a.dataRegistro || a.entrada);
-                const dataB = new Date(b.dataRegistro || b.entrada);
-                return dataB - dataA;
-            });
-            
-            if (historicoFiltrado.length === 0) {
-                container.innerHTML = `
-                    <div class="historico-vazio">
-                        <i class="fas fa-history" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                        <p>Nenhum registro encontrado com os filtros aplicados</p>
+            if (returned.length > 0) {
+                html += '<h3 style="margin: 32px 0 16px; color: #f97316;">✅ Histórico de Devoluções</h3>';
+                html += returned.slice(0, 5).map(l => `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <h4>${l.productName}</h4>
+                            <p>👤 ${l.userName}</p>
+                            <p>📅 Empréstimo: ${formatDateTime(l.datetime)}</p>
+                            <p>✅ Devolução: ${formatDateTime(l.returnDatetime)}</p>
+                        </div>
+                        <div class="item-status status-ok">
+                            ${l.quantity} unid.
+                        </div>
                     </div>
+                `).join('');
+            }
+            
+            list.innerHTML = html;
+        }
+
+        function openReturnModal(loanId) {
+            const loan = loans.find(l => l.id === loanId);
+            if (loan) {
+                document.getElementById('returnInfo').innerHTML = `
+                    <strong>Devolução:</strong><br>
+                    👤 ${loan.userName}<br>
+                    🔧 ${loan.productName}<br>
+                    📦 Quantidade: ${loan.quantity}
                 `;
+                document.getElementById('returnDate').value = new Date().toISOString().split('T')[0];
+                document.getElementById('returnTime').value = new Date().toTimeString().slice(0,5);
+                document.getElementById('returnLoanId').value = loanId;
+                document.getElementById('returnModal').classList.add('active');
+            }
+        }
+
+        function saveReturn() {
+            const loanId = parseInt(document.getElementById('returnLoanId').value);
+            const returnDate = document.getElementById('returnDate').value;
+            const returnTime = document.getElementById('returnTime').value;
+            
+            const index = loans.findIndex(l => l.id === loanId);
+            if (index === -1) return;
+            
+            loans[index].returned = true;
+            loans[index].returnDatetime = `${returnDate} ${returnTime}`;
+            
+            movements.push({
+                id: Date.now(),
+                productId: loans[index].productId,
+                productName: loans[index].productName,
+                quantity: loans[index].quantity,
+                datetime: `${returnDate} ${returnTime}`,
+                type: 'return',
+                observation: `Devolvido por ${loans[index].userName}`
+            });
+            
+            localStorage.setItem('loans', JSON.stringify(loans));
+            localStorage.setItem('movements', JSON.stringify(movements));
+            
+            closeModal('returnModal');
+            updateDashboard();
+            loadProducts();
+            loadLoanProductSelect();
+            showSection('dashboard');
+        }
+
+        // RETIRADA PERMANENTE
+        function openPermanentModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                document.getElementById('permanentInfo').innerHTML = `
+                    <strong>Registrar retirada permanente:</strong><br>
+                    🔧 ${product.name}<br>
+                    📦 Quantidade atual: ${product.quantity}
+                `;
+                document.getElementById('permanentUserName').value = '';
+                document.getElementById('permanentQuantity').value = 1;
+                document.getElementById('permanentDate').value = new Date().toISOString().split('T')[0];
+                document.getElementById('permanentTime').value = new Date().toTimeString().slice(0,5);
+                document.getElementById('permanentObservation').value = '';
+                document.getElementById('permanentProductId').value = productId;
+                document.getElementById('permanentModal').classList.add('active');
+            }
+        }
+
+        function savePermanent() {
+            const productId = parseInt(document.getElementById('permanentProductId').value);
+            const userName = document.getElementById('permanentUserName').value;
+            const qty = parseInt(document.getElementById('permanentQuantity').value);
+            const date = document.getElementById('permanentDate').value;
+            const time = document.getElementById('permanentTime').value;
+            const observation = document.getElementById('permanentObservation').value;
+            
+            if (!userName || !qty || !date || !time) {
+                alert('Preencha nome, quantidade, data e hora!');
                 return;
             }
             
-            historicoFiltrado.forEach((estadia, index) => {
-                const nomesHospedes = estadia.nomes ? estadia.nomes.join(', ') : estadia.nome;
-                const documentosHospedes = estadia.documentos ? estadia.documentos.join(', ') : estadia.documento;
-                const telefonesHospedes = estadia.telefones ? estadia.telefones.join(', ') : estadia.telefone;
-                
-                // Determinar status e cor
-                let statusTexto = 'Finalizado';
-                let statusClasse = 'status-finalizado';
-                
-                if (estadia.status === 'ativo') {
-                    statusTexto = 'Ativo';
-                    statusClasse = 'status-ativo';
-                } else if (estadia.checkoutAutomatico) {
-                    statusTexto = 'Auto Finalizado';
-                    statusClasse = 'status-automatico';
-                } else if (estadia.status === 'manutencao') {
-                    statusTexto = 'Manutenção';
-                    statusClasse = 'status-manutencao';
-                }
-                
-                const item = document.createElement('div');
-                item.className = 'historico-item';
-                item.innerHTML = `
-                    <div class="historico-header" data-index="${index}">
-                        <div class="historico-info">
-                            <div class="historico-info-item">
-                                <span class="historico-info-label">Quarto</span>
-                                <span class="historico-info-value">${estadia.quarto}</span>
-                            </div>
-                            <div class="historico-info-item">
-                                <span class="historico-info-label">Hóspedes</span>
-                                <span class="historico-info-value">${nomesHospedes}</span>
-                            </div>
-                            <div class="historico-info-item">
-                                <span class="historico-info-label">Entrada</span>
-                                <span class="historico-info-value">${formatarData(estadia.entrada)}</span>
-                            </div>
-                            <div class="historico-info-item">
-                                <span class="historico-info-label">Status</span>
-                                <span class="historico-info-value"><span class="status-historico ${statusClasse}">${statusTexto}</span></span>
-                            </div>
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            if (qty > product.quantity) {
+                alert('Quantidade indisponível em estoque!');
+                return;
+            }
+
+            // Reduzir do estoque
+            product.quantity -= qty;
+            
+            const datetime = `${date} ${time}`;
+
+            // Registrar movimentação de baixa
+            movements.push({
+                id: Date.now(),
+                productId: product.id,
+                productName: product.name,
+                quantity: qty,
+                datetime: datetime,
+                type: 'permanent',
+                observation: `Retirada permanente - ${userName} - ${observation}`
+            });
+
+            // Registrar na lista de retiradas
+            let permanentItems = JSON.parse(localStorage.getItem('permanent')) || [];
+            permanentItems.push({
+                id: Date.now(),
+                userName: userName,
+                productName: product.name,
+                productLocal: product.local,
+                quantity: qty,
+                datetime: datetime,
+                observation: observation
+            });
+            localStorage.setItem('permanent', JSON.stringify(permanentItems));
+            
+            localStorage.setItem('products', JSON.stringify(products));
+            localStorage.setItem('movements', JSON.stringify(movements));
+            
+            closeModal('permanentModal');
+            loadProducts();
+            updateDashboard();
+            loadPermanentItems();
+            loadHistory();
+        }
+
+        // CARREGAR ITENS DE RETIRADA PERMANENTE
+        function loadPermanentItems() {
+            const permanentItems = JSON.parse(localStorage.getItem('permanent')) || [];
+            const list = document.getElementById('permanentList');
+            
+            if (permanentItems.length > 0) {
+                list.innerHTML = permanentItems.sort((a,b) => b.id - a.id).map(p => `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <h4>${p.productName}</h4>
+                            <p>👤 ${p.userName}</p>
+                            <p>📍 ${p.productLocal}</p>
+                            <small>📅 ${formatDateTime(p.datetime)}</small>
+                            ${p.observation ? `<small>📝 ${p.observation}</small>` : ''}
                         </div>
-                        <div class="historico-actions">
-                            <button class="btn-detalhes" data-index="${index}">
-                                <i class="fas fa-bee"></i> Detalhes
-                            </button>
-                            <i class="fas fa-chevron-down toggle-icon"></i>
+                        <div class="item-status status-archived">
+                            ${p.quantity} unid.
                         </div>
                     </div>
-                    <div class="historico-detalhes" data-index="${index}">
-                        <div class="detalhes-grid">
-                            <div class="detalhes-item">
-                                <div class="detalhes-label">Quarto</div>
-                                <div class="detalhes-value">${estadia.quarto}</div>
-                            </div>
-                            <div class="detalhes-item">
-                                <div class="detalhes-label">Número de Pessoas</div>
-                                <div class="detalhes-value">${estadia.numPessoas}</div>
-                            </div>
-                            <div class="detalhes-item">
-                                <div class="detalhes-label">Data/Hora de Entrada</div>
-                                <div class="detalhes-value">${formatarDataHora(estadia.entrada, estadia.horaEntrada)}</div>
-                            </div>
-                            <div class="detalhes-item">
-                                <div class="detalhes-label">Data/Hora de Saída Prevista</div>
-                                <div class="detalhes-value">${formatarDataHora(estadia.saida, estadia.horaSaida)}</div>
-                            </div>
-                            <div class="detalhes-item">
-                                <div class="detalhes-label">Status</div>
-                                <div class="detalhes-value"><span class="status-historico ${statusClasse}">${statusTexto}</span></div>
-                            </div>
+                `).join('');
+            } else {
+                list.innerHTML = '<div class="empty-state"><span>🗑️</span><p>Nenhuma retirada registrada</p></div>';
+            }
+        }
+
+        // HISTÓRICO
+        function loadHistory() {
+            const dateFilter = document.getElementById('historyDate').value;
+            let filtered = movements;
+            if (dateFilter) {
+                filtered = movements.filter(m => m.datetime && m.datetime.startsWith(dateFilter));
+            }
+            
+            const list = document.getElementById('historyList');
+            if (filtered.length === 0) {
+                list.innerHTML = '<div class="empty-state"><span>📋</span><p>Nenhuma movimentação encontrada</p></div>';
+                return;
+            }
+            
+            list.innerHTML = filtered.sort((a,b) => b.id - a.id).map(m => {
+                let icon = m.type === 'entry' ? '📥' : m.type === 'exit' ? '📤' : m.type === 'loan' ? '🔧' : m.type === 'return' ? '↩️' : '🗑️';
+                let typeName = m.type === 'entry' ? 'Entrada' : m.type === 'exit' ? 'Saída' : m.type === 'loan' ? 'Empréstimo' : m.type === 'return' ? 'Devolução' : 'Retirada';
+                let color = m.type === 'entry' ? '#4caf50' : m.type === 'exit' ? '#f44336' : m.type === 'loan' ? '#42a5f5' : m.type === 'return' ? '#4caf50' : '#f97316';
+                
+                return `
+                    <div class="list-item">
+                        <div class="item-info">
+                            <h4>${m.productName}</h4>
+                            <p>${typeName} • ${m.quantity} unid.</p>
+                            <small>${formatDateTime(m.datetime)} ${m.observation ? ' • ' + m.observation : ''}</small>
                         </div>
-                        
-                        ${estadia.status !== 'manutencao' ? `
-                        <div style="margin-top: 20px;">
-                            <div class="hospede-titulo">Hóspedes</div>
-                            <div class="detalhes-grid">
-                                ${estadia.nomes ? estadia.nomes.map((nome, i) => `
-                                    <div class="hospede-info">
-                                        <div class="hospede-info-label">Hóspede ${i+1}</div>
-                                        <div class="detalhes-value">
-                                            <strong>Nome:</strong> ${nome}<br>
-                                            <strong>Documento:</strong> ${estadia.documentos ? estadia.documentos[i] : 'Não informado'}<br>
-                                            <strong>Telefone:</strong> ${estadia.telefones ? estadia.telefones[i] : 'Não informado'}
-                                        </div>
-                                    </div>
-                                `).join('') : `
-                                    <div class="hospede-info">
-                                        <div class="hospede-info-label">Hóspede Principal</div>
-                                        <div class="detalhes-value">
-                                            <strong>Nome:</strong> ${estadia.nome || 'Não informado'}<br>
-                                            <strong>Documento:</strong> ${estadia.documento || 'Não informado'}<br>
-                                            <strong>Telefone:</strong> ${estadia.telefone || 'Não informado'}
-                                        </div>
-                                    </div>
-                                `}
-                            </div>
+                        <div style="background: ${color}20; color: ${color}; padding: 4px 12px; border-radius: 40px; font-size: 12px; font-weight: 600;">
+                            ${icon}
                         </div>
-                        ` : `
-                        <div style="margin-top: 20px; padding: 15px; background-color: #fff3cd; border-radius: 6px;">
-                            <i class="fas fa-tools" style="font-size: 1.5rem; margin-bottom: 10px;"></i>
-                            <h4 style="margin-bottom: 10px;">Quarto em Manutenção</h4>
-                            <p>Este quarto está temporariamente indisponível para reservas devido a manutenção.</p>
-                        </div>
-                        `}
-                        
-                        ${estadia.observacao ? `
-                        <div class="observacao-box">
-                            <div class="observacao-label">Observação:</div>
-                            <div class="observacao-text">${estadia.observacao}</div>
-                        </div>
-                        ` : ''}
-                        
-                        ${estadia.checkoutAutomatico ? `
-                        <div style="margin-top: 20px; padding: 10px; background-color: #fff3cd; border-radius: 4px;">
-                            <i class="fas fa-info-circle"></i> Este check-out foi realizado automaticamente pelo sistema.
-                        </div>
-                        ` : ''}
                     </div>
                 `;
-                
-                container.appendChild(item);
-            });
-            
-            // Adicionar eventos para abrir/fechar os detalhes
-            document.querySelectorAll('.historico-header').forEach(header => {
-                header.addEventListener('click', function() {
-                    const index = this.getAttribute('data-index');
-                    const detalhes = document.querySelector(`.historico-detalhes[data-index="${index}"]`);
-                    const toggleIcon = this.querySelector('.toggle-icon');
-                    const btnDetalhes = this.querySelector('.btn-detalhes');
-                    
-                    // Fechar todos os outros itens abertos
-                    document.querySelectorAll('.historico-detalhes').forEach(d => {
-                        if (d !== detalhes) {
-                            d.classList.remove('active');
-                            const otherHeader = d.parentElement.querySelector('.historico-header');
-                            otherHeader.classList.remove('active');
-                            otherHeader.querySelector('.toggle-icon').classList.remove('aberto');
-                            otherHeader.querySelector('.btn-detalhes').classList.remove('aberto');
-                        }
-                    });
-                    
-                    // Alternar o item atual
-                    detalhes.classList.toggle('active');
-                    this.classList.toggle('active');
-                    toggleIcon.classList.toggle('aberto');
-                    btnDetalhes.classList.toggle('aberto');
-                });
-            });
-            
-            // Adicionar eventos aos botões de detalhes
-            document.querySelectorAll('.btn-detalhes').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const index = this.getAttribute('data-index');
-                    const header = document.querySelector(`.historico-header[data-index="${index}"]`);
-                    header.click();
-                });
-            });
+            }).join('');
         }
-        
-        // Função para fazer check-out
-        function fazerCheckout(quarto) {
-            const hospedeIndex = hospedesAtivos.findIndex(h => h.quarto === quarto);
-            
-            if (hospedeIndex !== -1) {
-                const hospede = hospedesAtivos[hospedeIndex];
-                
-                // Atualizar o registro no histórico para marcar como finalizado
-                const registroHistorico = historico.find(h => 
-                    h.quarto === quarto && h.status === 'ativo' && !h.dataSaidaReal
-                );
-                
-                if (registroHistorico) {
-                    registroHistorico.status = 'finalizado';
-                    registroHistorico.dataSaidaReal = new Date().toISOString().split('T')[0];
-                    delete registroHistorico.horaSaidaReal;
-                }
-                
-                // Remover dos hóspedes ativos
-                hospedesAtivos.splice(hospedeIndex, 1);
-                
-                salvarDados();
-                
-                // Atualizar visualizações
-                carregarQuartos();
-                carregarHospedesAtivos();
-                carregarHistorico();
-                
-                alert(`Check-out do quarto ${quarto} realizado com sucesso!`);
-            }
-        }
-        
-        // Função para abrir edição de check-in - CORRIGIDA: Agora funciona para quartos em manutenção
-        function abrirEdicaoCheckin(quarto, hospede) {
-            const modal = document.getElementById('modal-editar-checkin');
-            const titulo = document.getElementById('modal-editar-titulo');
-            const camposOcupado = document.getElementById('editar-campos-ocupado');
-            
-            titulo.textContent = `Editar Quarto ${quarto}`;
-            
-            // Preencher formulário com dados existentes, se houver
-            document.getElementById('editar-quarto').value = quarto;
-            
-            if (hospede) {
-                // Se o quarto está em manutenção, mostrar como disponível
-                if (hospede.status === 'manutencao') {
-                    document.getElementById('editar-status').value = 'disponivel';
-                    camposOcupado.style.display = 'none';
-                    document.getElementById('editar-observacao').value = hospede.observacao || '';
-                } else {
-                    document.getElementById('editar-status').value = hospede.status || 'ocupado';
-                    camposOcupado.style.display = 'block';
-                    
-                    document.getElementById('editar-num-pessoas').value = hospede.numPessoas || 1;
-                    
-                    // Preencher dados de entrada/saída
-                    document.getElementById('editar-data-entrada').value = hospede.entrada || '';
-                    document.getElementById('editar-data-saida').value = hospede.saida || '';
-                    document.getElementById('editar-hora-entrada').value = hospede.horaEntrada || '14:00';
-                    document.getElementById('editar-hora-saida').value = hospede.horaSaida || '12:00';
-                    
-                    // Preencher observação
-                    document.getElementById('editar-observacao').value = hospede.observacao || '';
-                    
-                    // Atualizar campos de hóspedes
-                    atualizarCamposHospedes();
-                    
-                    // Preencher dados dos hóspedes
-                    if (hospede.nomes && hospede.nomes.length > 0) {
-                        for (let i = 0; i < hospede.nomes.length; i++) {
-                            const nomeField = document.getElementById(`editar-nome-hospede${i+1}`);
-                            const docField = document.getElementById(`editar-documento${i+1}`);
-                            const telField = document.getElementById(`editar-telefone${i+1}`);
-                            
-                            if (nomeField) nomeField.value = hospede.nomes[i];
-                            if (docField) docField.value = hospede.documentos ? hospede.documentos[i] : '';
-                            if (telField) telField.value = hospede.telefones ? hospede.telefones[i] : '';
-                        }
-                    } else {
-                        // Compatibilidade com dados antigos
-                        document.getElementById('editar-nome-hospede1').value = hospede.nome || '';
-                        document.getElementById('editar-documento1').value = hospede.documento || '';
-                        document.getElementById('editar-telefone1').value = hospede.telefone || '';
-                    }
-                }
-            } else {
-                document.getElementById('editar-status').value = 'disponivel';
-                camposOcupado.style.display = 'none';
-                
-                // Limpar campos
-                document.getElementById('editar-num-pessoas').value = '1';
-                document.getElementById('editar-observacao').value = '';
-                
-                // Definir datas padrão
-                const hoje = new Date().toISOString().split('T')[0];
-                const amanha = new Date();
-                amanha.setDate(amanha.getDate() + 1);
-                const amanhaStr = amanha.toISOString().split('T')[0];
-                
-                document.getElementById('editar-data-entrada').value = hoje;
-                document.getElementById('editar-data-saida').value = amanhaStr;
-                document.getElementById('editar-hora-entrada').value = '14:00';
-                document.getElementById('editar-hora-saida').value = '12:00';
-                
-                // Atualizar campos de hóspedes
-                atualizarCamposHospedes();
-            }
-            
-            modal.style.display = 'flex';
-        }
-        
-        // Função para salvar edição de check-in - MODIFICADA: Remove manutenção e volta para disponível automaticamente
-        function salvarEdicaoCheckin() {
-            const quarto = parseInt(document.getElementById('editar-quarto').value);
-            const status = document.getElementById('editar-status').value;
-            const observacao = document.getElementById('editar-observacao').value;
-            
-            const hospedeIndex = hospedesAtivos.findIndex(h => h.quarto === quarto);
-            
-            if (status === 'ocupado') {
-                const numPessoas = parseInt(document.getElementById('editar-num-pessoas').value);
-                const entrada = document.getElementById('editar-data-entrada').value;
-                const saida = document.getElementById('editar-data-saida').value;
-                const horaEntrada = document.getElementById('editar-hora-entrada').value;
-                const horaSaida = document.getElementById('editar-hora-saida').value;
-                
-                // Validar se a data de saída não é anterior à data de entrada
-                if (new Date(saida) < new Date(entrada)) {
-                    alert('A data de saída não pode ser anterior à data de entrada');
-                    return;
-                }
-                
-                // Coletar dados dos hóspedes
-                const nomes = [];
-                const documentos = [];
-                const telefones = [];
-                
-                for (let i = 1; i <= numPessoas; i++) {
-                    const nome = document.getElementById(`editar-nome-hospede${i}`).value;
-                    const documento = document.getElementById(`editar-documento${i}`).value;
-                    const telefone = document.getElementById(`editar-telefone${i}`).value;
-                    
-                    if (!nome || !documento || !telefone) {
-                        alert(`Por favor, preencha todos os dados do Hóspede ${i}`);
-                        return;
-                    }
-                    
-                    nomes.push(nome);
-                    documentos.push(documento);
-                    telefones.push(telefone);
-                }
-                
-                // Atualizar ou adicionar hóspede
-                const hospede = {
-                    quarto,
-                    numPessoas,
-                    nomes,
-                    documentos,
-                    telefones,
-                    entrada,
-                    saida,
-                    horaEntrada,
-                    horaSaida,
-                    observacao,
-                    status: 'ativo'
-                };
-                
-                if (hospedeIndex !== -1) {
-                    // Atualizar hóspede existente
-                    hospedesAtivos[hospedeIndex] = hospede;
-                    
-                    // Atualizar também no histórico se existir
-                    const registroHistorico = historico.find(h => 
-                        h.quarto === quarto && h.status === 'ativo' && !h.dataSaidaReal
-                    );
-                    if (registroHistorico) {
-                        Object.assign(registroHistorico, hospede);
-                        registroHistorico.status = 'ativo';
-                        registroHistorico.observacao = observacao;
-                    }
-                } else {
-                    // Adicionar novo hóspede
-                    hospedesAtivos.push(hospede);
-                    
-                    // Registrar automaticamente no histórico
-                    const registroHistorico = {
-                        ...hospede,
-                        status: 'ativo',
-                        dataRegistro: new Date().toISOString().split('T')[0],
-                        horaRegistro: new Date().toTimeString().split(' ')[0].substring(0, 5)
-                    };
-                    historico.unshift(registroHistorico);
-                }
-            } else {
-                // Status = disponivel - Remover hóspede se existir (incluindo manutenção)
-                if (hospedeIndex !== -1) {
-                    const hospede = hospedesAtivos[hospedeIndex];
-                    
-                    // Se estava em manutenção, apenas remover da lista de ativos (não criar registro no histórico)
-                    if (hospede.status === 'manutencao') {
-                        hospedesAtivos.splice(hospedeIndex, 1);
-                    } 
-                    // Se estava ocupado, marcar como finalizado no histórico
-                    else if (hospede.status === 'ativo') {
-                        const registroHistorico = historico.find(h => 
-                            h.quarto === quarto && h.status === 'ativo' && !h.dataSaidaReal
-                        );
-                        if (registroHistorico) {
-                            registroHistorico.status = 'finalizado';
-                            registroHistorico.dataSaidaReal = new Date().toISOString().split('T')[0];
-                            delete registroHistorico.horaSaidaReal;
-                        }
-                        
-                        hospedesAtivos.splice(hospedeIndex, 1);
-                    }
-                }
-            }
-            
-            salvarDados();
-            
-            // Fechar modal
-            document.getElementById('modal-editar-checkin').style.display = 'none';
-            
-            // Atualizar visualizações
-            carregarQuartos();
-            carregarHospedesAtivos();
-            carregarHistorico();
-            
-            // Mostrar mensagem de sucesso
-            alert('Alterações salvas com sucesso!');
-        }
-        
-        // Função para mostrar detalhes do quarto - MODIFICADA: Adicionado botão para finalizar manutenção diretamente
-        function mostrarDetalhesQuarto(quarto, hospede) {
-            const modal = document.getElementById('modal-quarto');
-            const titulo = document.getElementById('modal-titulo');
-            const conteudo = document.getElementById('modal-conteudo');
-            
-            titulo.textContent = `Quarto ${quarto}`;
-            
-            if (hospede) {
-                if (hospede.status === 'manutencao') {
-                    conteudo.innerHTML = `
-                        <div class="status-indicator">
-                            <div class="status-dot manutencao"></div>
-                            <span>Manutenção</span>
-                        </div>
-                        <p><strong>Status:</strong> Em manutenção</p>
-                        <p><strong>Data do registro:</strong> ${formatarData(hospede.dataRegistro)}</p>
-                        ${hospede.observacao ? `
-                        <div class="observacao-box">
-                            <div class="observacao-label">Observação:</div>
-                            <div class="observacao-text">${hospede.observacao}</div>
-                        </div>
-                        ` : ''}
-                        <button class="finalizar-manutencao-btn" style="margin-top: 15px;">
-                            <i class="fas fa-check"></i> Finalizar Manutenção
-                        </button>
-                        <button class="edit-btn" style="margin-top: 10px;">Editar</button>
-                    `;
-                    
-                    // Adicionar evento ao botão de finalizar manutenção
-                    conteudo.querySelector('.finalizar-manutencao-btn').addEventListener('click', function() {
-                        finalizarManutencaoDireta(quarto);
-                    });
-                    
-                    // Adicionar evento ao botão de edição
-                    conteudo.querySelector('.edit-btn').addEventListener('click', function() {
-                        modal.style.display = 'none';
-                        abrirEdicaoCheckin(quarto, hospede);
-                    });
-                } else {
-                    const nomesHospedes = hospede.nomes ? hospede.nomes.join(', ') : hospede.nome;
-                    const documentosHospedes = hospede.documentos ? hospede.documentos.join(', ') : hospede.documento;
-                    const telefonesHospedes = hospede.telefones ? hospede.telefones.join(', ') : hospede.telefone;
-                    
-                    conteudo.innerHTML = `
-                        <div class="status-indicator">
-                            <div class="status-dot ocupado"></div>
-                            <span>Ocupado</span>
-                        </div>
-                        <p><strong>Hóspedes:</strong> ${nomesHospedes}</p>
-                        <p><strong>Documentos:</strong> ${documentosHospedes}</p>
-                        <p><strong>Telefones:</strong> ${telefonesHospedes}</p>
-                        <p><strong>Número de pessoas:</strong> ${hospede.numPessoas}</p>
-                        <p><strong>Entrada:</strong> ${formatarDataHora(hospede.entrada, hospede.horaEntrada)}</p>
-                        <p><strong>Saída prevista:</strong> ${formatarDataHora(hospede.saida, hospede.horaSaida)}</p>
-                        ${hospede.observacao ? `
-                        <div class="observacao-box">
-                            <div class="observacao-label">Observação:</div>
-                            <div class="observacao-text">${hospede.observacao}</div>
-                        </div>
-                        ` : ''}
-                        <button class="edit-btn" style="margin-top: 15px;">Editar Check-in</button>
-                        <button class="manutencao-direct-btn" style="margin-top: 10px;">Colocar em Manutenção</button>
-                        <button class="checkout-btn" style="margin-top: 10px;">Fazer Check-out</button>
-                    `;
-                    
-                    // Adicionar evento ao botão de manutenção direta
-                    conteudo.querySelector('.manutencao-direct-btn').addEventListener('click', function() {
-                        modal.style.display = 'none';
-                        abrirManutencaoDireta(quarto);
-                    });
-                    
-                    // Adicionar evento ao botão de check-out
-                    conteudo.querySelector('.checkout-btn').addEventListener('click', function() {
-                        fazerCheckout(quarto);
-                        modal.style.display = 'none';
-                    });
-                    
-                    // Adicionar evento ao botão de edição
-                    conteudo.querySelector('.edit-btn').addEventListener('click', function() {
-                        modal.style.display = 'none';
-                        abrirEdicaoCheckin(quarto, hospede);
-                    });
-                }
-            } else {
-                conteudo.innerHTML = `
-                    <div class="status-indicator">
-                        <div class="status-dot disponivel"></div>
-                        <span>Disponível</span>
-                    </div>
-                    <p>Este quarto está disponível para reserva.</p>
-                    <button class="edit-btn" style="margin-top: 15px;">Fazer Check-in</button>
-                    <button class="manutencao-direct-btn" style="margin-top: 10px;">Colocar em Manutenção</button>
-                `;
-                
-                // Adicionar evento ao botão de check-in
-                conteudo.querySelector('.edit-btn').addEventListener('click', function() {
-                    modal.style.display = 'none';
-                    abrirEdicaoCheckin(quarto, null);
-                });
-                
-                // Adicionar evento ao botão de manutenção
-                conteudo.querySelector('.manutencao-direct-btn').addEventListener('click', function() {
-                    modal.style.display = 'none';
-                    abrirManutencaoDireta(quarto);
-                });
-            }
-            
-            modal.style.display = 'flex';
-        }
-        
-        // Função para atualizar quantidades
-        function atualizarQuantidades() {
-            const totalQuartos = quartos.terreo.length + quartos.primeiro.length + quartos.segundo.length + 
-                                quartos.tenis.length + quartos.soccer.length;
-            const quartosOcupados = hospedesAtivos.filter(h => h.status === 'ativo').length;
-            
-            document.getElementById('quantidade-quartos').textContent = totalQuartos;
-            document.getElementById('quantidade-hospedes').textContent = quartosOcupados;
-        }
-        
-        // Função para formatar apenas a data (sem hora)
-        function formatarData(dataString) {
-            if (!dataString) return '';
-            
-            const data = new Date(dataString);
-            return data.toLocaleDateString('pt-BR');
-        }
-        
-        // Função para formatar data e hora
-        function formatarDataHora(dataString, horaString) {
-            if (!dataString) return '';
-            
-            const data = new Date(dataString);
-            const dataFormatada = data.toLocaleDateString('pt-BR');
-            
-            if (horaString) {
-                return `${dataFormatada} às ${horaString}`;
-            }
-            
-            return dataFormatada;
-        }
-        
-        // Função para salvar dados no localStorage
-        function salvarDados() {
-            localStorage.setItem('hospedesAtivos', JSON.stringify(hospedesAtivos));
-            localStorage.setItem('historico', JSON.stringify(historico));
-            localStorage.setItem('usuariosHWT', JSON.stringify(usuarios));
-            
-            // Marcar a última atualização para sincronização
-            const timestamp = new Date().toISOString();
-            localStorage.setItem('ultimaAtualizacaoHWT', timestamp);
-            ultimaAtualizacao = timestamp;
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
         }
     </script>
 </body>
